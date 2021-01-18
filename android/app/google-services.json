@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "666245329458",
+    "firebase_url": "https://auth-b24de.firebaseio.com",
+    "project_id": "auth-b24de",
+    "storage_bucket": "auth-b24de.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:666245329458:android:af6e521d41fb242b23822b",
+        "android_client_info": {
+          "package_name": "com.fagnum.qirana"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "666245329458-5md36hsqulrdqgimusa8r3ut4fkos91v.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.fagnum.qirana",
+            "certificate_hash": "c98529430e920497953d596f562b2f8ba11c1f86"
+          }
+        },
+        {
+          "client_id": "666245329458-serqnl6q88bptndb8mil81v9m4opufd1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCu2S_2lmavsTJN8JxMTxFyVDjxAaGsgL4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "666245329458-serqnl6q88bptndb8mil81v9m4opufd1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
