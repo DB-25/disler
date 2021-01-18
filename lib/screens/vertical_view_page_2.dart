@@ -1,12 +1,13 @@
+import 'package:disler/components/horizontal_category.dart';
+import 'package:disler/components/icon_btn.dart';
+import 'package:disler/components/item_view_vertical.dart';
+import 'package:disler/model/category_model.dart';
+import 'package:disler/model/product_model.dart';
+import 'package:disler/networking/ApiResponse.dart';
+import 'package:disler/networking/api_driver.dart';
 import 'package:flutter/material.dart';
-import 'package:qirana_app/components/icon_btn.dart';
-import 'package:qirana_app/components/item_view_vertical.dart';
-import 'package:qirana_app/model/category_model.dart';
-import 'package:qirana_app/model/product_model.dart';
-import 'package:qirana_app/components/horizontal_category.dart';
-import 'package:qirana_app/networking/ApiResponse.dart';
+
 import 'search_result.dart';
-import 'package:qirana_app/networking/api_driver.dart';
 
 class VerticalViewPage2 extends StatefulWidget {
   final List<ProductModel> bestDeals;
@@ -146,11 +147,10 @@ class _VerticalViewPage2State extends State<VerticalViewPage2> {
               }),
           IconBtn(
             icon: Icon(Icons.notifications_active, color: Colors.black45),
-            press: () {
-            },
+            press: () {},
           ),
 
-         /* IconButton(
+          /* IconButton(
               icon: Icon(
                 Icons.notifications_active,
                 color: Colors.black,
@@ -158,7 +158,8 @@ class _VerticalViewPage2State extends State<VerticalViewPage2> {
               onPressed: () {})*/
         ],
         elevation: 0,
-        leading:/* IconButton(
+        leading:
+            /* IconButton(
           icon: Icon(
             Icons.arrow_back,
             color: Colors.black,
@@ -167,13 +168,12 @@ class _VerticalViewPage2State extends State<VerticalViewPage2> {
             Navigator.pop(context);
           },
         ),*/
-        IconBtn(
+            IconBtn(
           icon: Icon(Icons.arrow_back, color: Colors.black45),
           press: () {
             Navigator.pop(context);
           },
         ),
-
         title: Text(
           title,
           style: TextStyle(color: Colors.black),

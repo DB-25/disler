@@ -1,5 +1,6 @@
+import 'package:disler/model/category_model.dart';
 import 'package:flutter/material.dart';
-import 'package:qirana_app/model/category_model.dart';
+
 import 'category_card.dart';
 
 class HorizontalCategory extends StatefulWidget {
@@ -55,7 +56,7 @@ class _HorizontalCategoryState extends State<HorizontalCategory> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left:8.0,right: 8),
+      padding: const EdgeInsets.only(left: 8.0, right: 8),
       child: Container(
         height: (widget.showTitle) ? 125 : 102,
         child: Column(

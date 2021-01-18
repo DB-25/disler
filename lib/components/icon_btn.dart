@@ -1,6 +1,5 @@
+import 'package:disler/constants.dart';
 import 'package:flutter/material.dart';
-import 'package:qirana_app/constants.dart';
-import 'package:qirana_app/size_config.dart';
 
 class IconBtn extends StatelessWidget {
   const IconBtn({

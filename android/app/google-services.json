@@ -8,6 +8,35 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:666245329458:android:26a3ec03d8290db723822b",
+        "android_client_info": {
+          "package_name": "com.fagnum.disler"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "666245329458-serqnl6q88bptndb8mil81v9m4opufd1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCu2S_2lmavsTJN8JxMTxFyVDjxAaGsgL4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "666245329458-serqnl6q88bptndb8mil81v9m4opufd1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:666245329458:android:af6e521d41fb242b23822b",
         "android_client_info": {
           "package_name": "com.fagnum.qirana"

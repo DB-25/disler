@@ -1,12 +1,12 @@
 import 'dart:convert';
 
+import 'package:disler/components/input_field.dart';
+import 'package:disler/model/order_detail_model.dart';
+import 'package:disler/model/product_model.dart';
+import 'package:disler/networking/ApiResponse.dart';
+import 'package:disler/networking/api_driver.dart';
+import 'package:disler/screens/order_confirm.dart';
 import 'package:flutter/material.dart';
-import 'package:qirana_app/components/input_field.dart';
-import 'package:qirana_app/model/product_model.dart';
-import 'package:qirana_app/model/order_detail_model.dart';
-import 'package:qirana_app/networking/ApiResponse.dart';
-import 'package:qirana_app/networking/api_driver.dart';
-import 'package:qirana_app/screens/order_confirm.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AddressPage extends StatefulWidget {
@@ -350,10 +350,11 @@ class _AddressPageState extends State<AddressPage> {
                         ),
                         onPressed: () async {
                           SharedPreferences prefs =
-                          await SharedPreferences.getInstance();
+                              await SharedPreferences.getInstance();
                           await prefs.setBool('address_added', true);
                           //print(json.encode(formData));
-                          await prefs.setString('address_form_data', json.encode(formData));
+                          await prefs.setString(
+                              'address_form_data', json.encode(formData));
                           _formKey.currentState.save();
                           if (!_formKey.currentState.validate()) return;
                           addressDetails = OrderDetailModel.fromMap(formData);

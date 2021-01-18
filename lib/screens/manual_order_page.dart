@@ -1,8 +1,8 @@
+import 'package:disler/model/orders_model.dart';
+import 'package:disler/networking/ApiResponse.dart';
+import 'package:disler/networking/api_driver.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:qirana_app/model/orders_model.dart';
-import 'package:qirana_app/networking/ApiResponse.dart';
-import 'package:qirana_app/networking/api_driver.dart';
 
 class ManualOrder extends StatefulWidget {
   @override
@@ -28,8 +28,7 @@ class _ManualOrderState extends State<ManualOrder> {
   Future<List<OrdersModel>> getOrdersList() async {
     ApiResponse response = await apiDriver.getOrders();
     getOrders(response.data);
-    setState(() {
-    });
+    setState(() {});
   }
 
   @override
@@ -77,14 +76,14 @@ class _ManualOrderState extends State<ManualOrder> {
                       width: MediaQuery.of(context).size.width,
                       child: ListTile(
                         title: Text(
-                          "Order Id: "+orders[index].orderId,
+                          "Order Id: " + orders[index].orderId,
                           style: TextStyle(
                               fontWeight: FontWeight.w700, fontSize: 17),
                           maxLines: 2,
                           softWrap: true,
                         ),
                         subtitle: Text(
-                          "Date: "+orders[index].orderDate,
+                          "Date: " + orders[index].orderDate,
                           style: TextStyle(
                               fontWeight: FontWeight.w700, fontSize: 13),
                         ),
@@ -93,7 +92,7 @@ class _ManualOrderState extends State<ManualOrder> {
                           width: 100,
                           child: Center(
                             child: Text(
-                              "Rs."+orders[index].orderId+"/-",
+                              "Rs." + orders[index].orderId + "/-",
                               style: TextStyle(
                                   fontWeight: FontWeight.w700, fontSize: 16),
                             ),
@@ -103,7 +102,7 @@ class _ManualOrderState extends State<ManualOrder> {
                     ),
                   ],
                 ),
-                itemCount:orders.length,
+                itemCount: orders.length,
               ),
             ),
           ],

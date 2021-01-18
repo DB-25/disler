@@ -1,7 +1,7 @@
+import 'package:disler/components/input_field.dart';
+import 'package:disler/components/password_field.dart';
+import 'package:disler/screens/login_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:qirana_app/components/input_field.dart';
-import 'package:qirana_app/components/password_field.dart';
-import 'package:qirana_app/screens/login_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   @override

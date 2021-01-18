@@ -1,18 +1,20 @@
 import 'dart:async';
+
+import 'package:disler/model/banner_model.dart';
+import 'package:disler/model/category_model.dart';
+import 'package:disler/model/product_model.dart';
+import 'package:disler/networking/ApiResponse.dart';
+import 'package:disler/networking/api_driver.dart';
+import 'package:disler/routes.dart';
+import 'package:disler/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:qirana_app/routes.dart';
-import 'package:qirana_app/size_config.dart';
-import 'profile_page.dart';
+
 import 'cart_page.dart';
 import 'favorite_page.dart';
-import 'search_page.dart';
 import 'home_page_2.dart';
-import 'package:qirana_app/model/category_model.dart';
-import 'package:qirana_app/model/product_model.dart';
-import 'package:qirana_app/networking/api_driver.dart';
-import 'package:qirana_app/networking/ApiResponse.dart';
-import 'package:qirana_app/model/banner_model.dart';
+import 'profile_page.dart';
+import 'search_page.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -88,11 +90,11 @@ class _HomeScreenState extends State<HomeScreen> {
     // ApiResponse responseBanner = await apiDriver.getData('banner-all');
     // if (responseBanner != null) getBannerDetails(responseBanner.data[0]);
     ApiResponse responseCategory = await apiDriver.getData('category-all');
-    ApiResponse responsePopularDeals = await apiDriver.getData('product-slider');
-    ApiResponse responseBestDeals = await apiDriver.getData('best-deal');
+    // ApiResponse responsePopularDeals = await apiDriver.getData('product-slider');
+    // ApiResponse responseBestDeals = await apiDriver.getData('best-deal');
     if (responseCategory != null) getCategoryDetails(responseCategory.data);
-    if (responsePopularDeals != null) getPopularDealsDetails(responsePopularDeals.data);
-    if (responseBestDeals != null) getBestDealsDetails(responseBestDeals.data);
+    // if (responsePopularDeals != null) getPopularDealsDetails(responsePopularDeals.data);
+    // if (responseBestDeals != null) getBestDealsDetails(responseBestDeals.data);
   }
 
   void getPopularDealsDetails(List data) {

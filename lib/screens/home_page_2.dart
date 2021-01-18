@@ -2,22 +2,20 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:carousel_pro/carousel_pro.dart';
+import 'package:disler/components/horizontal_category.dart';
+import 'package:disler/components/icon_btn.dart';
+import 'package:disler/components/search_field.dart';
+import 'package:disler/model/banner_model.dart';
+import 'package:disler/model/category_model.dart';
+import 'package:disler/model/product_model.dart';
+import 'package:disler/networking/api_driver.dart';
+import 'package:disler/screens/address_page.dart';
+import 'package:disler/screens/login_screen.dart';
+import 'package:disler/screens/manual_order_page.dart';
+import 'package:disler/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:qirana_app/components/horizontal_category.dart';
-import 'package:qirana_app/components/horizontal_item_view.dart';
-import 'package:qirana_app/components/icon_btn.dart';
-import 'package:qirana_app/components/search_field.dart';
-import 'package:qirana_app/components/vertical_item_view.dart';
-import 'package:qirana_app/model/banner_model.dart';
-import 'package:qirana_app/model/category_model.dart';
-import 'package:qirana_app/model/product_model.dart';
-import 'package:qirana_app/networking/api_driver.dart';
-import 'package:qirana_app/screens/address_page.dart';
-import 'package:qirana_app/screens/login_screen.dart';
-import 'package:qirana_app/screens/manual_order_page.dart';
-import 'package:qirana_app/size_config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'inventory_page.dart';
@@ -33,7 +31,11 @@ class HomePage2 extends StatefulWidget {
   final List<ProductModel> popularProductModel;
   final List<ProductModel> bestDealModel;
 
-  HomePage2({this.bannerModel, this.popularProductModel, this.bestDealModel, this.categoryModel});
+  HomePage2(
+      {this.bannerModel,
+      this.popularProductModel,
+      this.bestDealModel,
+      this.categoryModel});
 
   @override
   _HomePage2State createState() => _HomePage2State(
@@ -50,7 +52,8 @@ class _HomePage2State extends State<HomePage2> {
   List<ProductModel> bestDeals;
   List<ProductModel> popular;
 
-  _HomePage2State({this.bannerModel, this.popular, this.bestDeals, this.categoryModel});
+  _HomePage2State(
+      {this.bannerModel, this.popular, this.bestDeals, this.categoryModel});
 
   _handleSignOut() {
     _googleSignIn.disconnect();
@@ -124,8 +127,8 @@ class _HomePage2State extends State<HomePage2> {
   @override
   Widget build(BuildContext context) {
     //int productModelLength = productModel.length;
-   // productModel.sublist(0, (productModelLength / 2).floor());
-   // popular = productModel.sublist((productModelLength / 2).floor());
+    // productModel.sublist(0, (productModelLength / 2).floor());
+    // popular = productModel.sublist((productModelLength / 2).floor());
     return GestureDetector(
       onTap: () {
         FocusScopeNode currentFocus = FocusScope.of(context);
@@ -137,65 +140,74 @@ class _HomePage2State extends State<HomePage2> {
         key: _scaffoldKey,
         appBar: AppBar(
           actions: <Widget>[
-         Container(width: SizeConfig.screenWidth * 1,
-            child: Row(children: [
-              Expanded(
-                flex:0,
-                child: Container(
-                child:IconButton(
-                  icon: Icon(
-                    Icons.segment,
-                    color: Colors.black54,
+            Container(
+              width: SizeConfig.screenWidth * 1,
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 0,
+                    child: Container(
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.segment,
+                          color: Colors.black54,
+                        ),
+                        onPressed: () {
+                          _scaffoldKey.currentState.openDrawer();
+                        },
+                      ),
+                    ),
                   ),
-                  onPressed: () {
-                    _scaffoldKey.currentState.openDrawer();
-                  },
-                ),),),
-              Expanded(
-                flex:1,
-                child:InkWell(
-                onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => SearchResult()));
-                },
-                child: Container(
-                  margin: EdgeInsets.only(left: 5, top: 10),
-                  child: SearchField(),
-                ),
-              ),),
+                  Expanded(
+                    flex: 1,
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => SearchResult()));
+                      },
+                      child: Container(
+                        margin: EdgeInsets.only(left: 5, top: 10),
+                        child: SearchField(),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 0,
+                    child: Container(
+                      margin: EdgeInsets.only(left: 10, top: 10, right: 0),
+                      child: IconBtn(
+                        icon: Icon(Icons.add_a_photo, color: Colors.black45),
+                        press: () {
+                          getImage();
+                          if (_image != null)
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => AddressPage(
+                                          products: null,
+                                        )));
+                        },
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 0,
+                    child: Container(
+                      margin: EdgeInsets.only(left: 5, top: 10, right: 5),
+                      child: IconBtn(
+                        icon: Icon(Icons.notifications_active,
+                            color: Colors.black45),
+                        press: () {},
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
 
-              Expanded(
-                flex: 0,
-                child:Container(
-                margin: EdgeInsets.only(left:10,top: 10,right: 0),
-                child: IconBtn(
-                  icon: Icon(Icons.add_a_photo, color: Colors.black45),
-                  press: () {
-                    getImage();
-                    if (_image != null)
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => AddressPage(
-                                products: null,
-                              )));
-                  },
-                ),
-              ),),
-
-              Expanded(
-                flex: 0,
-                child:Container(
-                margin: EdgeInsets.only(left:5,top: 10,right: 5),
-                child: IconBtn(
-                  icon: Icon(Icons.notifications_active, color: Colors.black45),
-                  press: () {},
-                ),
-              ),),
-
-            ],),),
-
-           /*IconButton(
+            /*IconButton(
               icon: Icon(
                 Icons.search,
                 color: Colors.black,
@@ -205,8 +217,7 @@ class _HomePage2State extends State<HomePage2> {
                     MaterialPageRoute(builder: (context) => SearchResult()));
               }),*/
 
-
-           /*IconButton(
+            /*IconButton(
               icon: Icon(
                 Icons.add_a_photo,
                 color: Colors.black,
@@ -221,7 +232,6 @@ class _HomePage2State extends State<HomePage2> {
                                 products: null,
                               )));
               }),*/
-
           ],
           elevation: 0,
           leading: Container(),
@@ -261,41 +271,41 @@ class _HomePage2State extends State<HomePage2> {
                     return (value)
                         ? Container()
                         : ListTile(
-                      title: Text(
-                        "Log In",
-                        style: TextStyle(
-                          fontWeight: FontWeight.w700,
-                          color: Colors.black54,
-                          fontSize: 18,
-                        ),
-                      ),
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => LoginScreen()));
-                      },
-                    );
+                            title: Text(
+                              "Log In",
+                              style: TextStyle(
+                                fontWeight: FontWeight.w700,
+                                color: Colors.black54,
+                                fontSize: 18,
+                              ),
+                            ),
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => LoginScreen()));
+                            },
+                          );
                   }),
               ValueListenableBuilder<bool>(
                   valueListenable: admin,
                   builder: (BuildContext context, bool value, Widget child) {
                     return (value)
                         ? ListTile(
-                      title: Text(
-                        'Check Inventory',
-                        style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.black54,
-                            fontWeight: FontWeight.w700),
-                      ),
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => Inventory()));
-                      },
-                    )
+                            title: Text(
+                              'Check Inventory',
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  color: Colors.black54,
+                                  fontWeight: FontWeight.w700),
+                            ),
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => Inventory()));
+                            },
+                          )
                         : Container();
                   }),
               ListTile(
@@ -326,29 +336,29 @@ class _HomePage2State extends State<HomePage2> {
                   builder: (BuildContext context, bool value, Widget child) {
                     return (value)
                         ? ListTile(
-                      title: Text(
-                        'Log Out',
-                        style: TextStyle(
-                            fontSize: 18,
-                            color: Color(0xFFff5860),
-                            fontWeight: FontWeight.w700),
-                      ),
-                      onTap: () async {
-                        setState(() {
-                          _handleSignOut();
-                        });
-                        SharedPreferences prefs =
-                        await SharedPreferences.getInstance();
-                        autoLoginBool.value = false;
-                        // ignore: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
-                        autoLoginBool.notifyListeners();
-                        await prefs.clear();
-                        admin.value = false;
-                        // ignore: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
-                        admin.notifyListeners();
-                        setState(() {});
-                      },
-                    )
+                            title: Text(
+                              'Log Out',
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  color: Color(0xFFff5860),
+                                  fontWeight: FontWeight.w700),
+                            ),
+                            onTap: () async {
+                              setState(() {
+                                _handleSignOut();
+                              });
+                              SharedPreferences prefs =
+                                  await SharedPreferences.getInstance();
+                              autoLoginBool.value = false;
+                              // ignore: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
+                              autoLoginBool.notifyListeners();
+                              await prefs.clear();
+                              admin.value = false;
+                              // ignore: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
+                              admin.notifyListeners();
+                              setState(() {});
+                            },
+                          )
                         : Container();
                   }),
             ],
@@ -365,17 +375,17 @@ class _HomePage2State extends State<HomePage2> {
                 ),
                 categoryModel == null
                     ? Center(
-                  child: SizedBox(
-                    height: 30,
-                    width: 30,
-                    child: CircularProgressIndicator(),
-                  ),
-                )
+                        child: SizedBox(
+                          height: 30,
+                          width: 30,
+                          child: CircularProgressIndicator(),
+                        ),
+                      )
                     : HorizontalCategory(
-                  showTitle: false,
-                  categoryModel: categoryModel,
-                  duration: 2,
-                ),
+                        showTitle: false,
+                        categoryModel: categoryModel,
+                        duration: 2,
+                      ),
                 SizedBox(
                   height: 5,
                 ),
@@ -393,75 +403,75 @@ class _HomePage2State extends State<HomePage2> {
                       width: MediaQuery.of(context).size.width,
                       child: loading
                           ? Center(
-                        child: SizedBox(
-                          height: 30,
-                          width: 30,
-                          child: CircularProgressIndicator(),
-                        ),
-                      )
+                              child: SizedBox(
+                                height: 30,
+                                width: 30,
+                                child: CircularProgressIndicator(),
+                              ),
+                            )
                           : Carousel(
-                        images: [
-                          NetworkImage(
-                              ApiDriver().getBaseUrl()+'/wp/home/ff80818171b2ad0501720ab097fd0006/bannerOne/banner-one.png'),
-                          NetworkImage(
-                              ApiDriver().getBaseUrl()+'/wp/home/ff80818171b2ad0501720ab097fd0006/bannerTwo/banner-2.jpg'),
-                          NetworkImage(
-                              ApiDriver().getBaseUrl()+'/wp/home/ff80818171b2ad0501720ab097fd0006/bannerThree/banner-3.png')
-                        ],
-                        boxFit: BoxFit.fill,
-                        showIndicator: true,
-                        dotIncreaseSize: 1.3,
-                        dotBgColor: Colors.black.withOpacity(0),
-                        dotColor: Colors.white70,
-                        borderRadius: false,
-                        moveIndicatorFromBottom: 180.0,
-                        noRadiusForIndicator: true,
-                        overlayShadow: false,
-                        overlayShadowColors: Colors.white,
-                        overlayShadowSize: 0.7,
-                      ),
+                              images: [
+                                NetworkImage(ApiDriver().getBaseUrl() +
+                                    '/wp/home/ff80818171b2ad0501720ab097fd0006/bannerOne/banner-one.png'),
+                                NetworkImage(ApiDriver().getBaseUrl() +
+                                    '/wp/home/ff80818171b2ad0501720ab097fd0006/bannerTwo/banner-2.jpg'),
+                                NetworkImage(ApiDriver().getBaseUrl() +
+                                    '/wp/home/ff80818171b2ad0501720ab097fd0006/bannerThree/banner-3.png')
+                              ],
+                              boxFit: BoxFit.fill,
+                              showIndicator: true,
+                              dotIncreaseSize: 1.3,
+                              dotBgColor: Colors.black.withOpacity(0),
+                              dotColor: Colors.white70,
+                              borderRadius: false,
+                              moveIndicatorFromBottom: 180.0,
+                              noRadiusForIndicator: true,
+                              overlayShadow: false,
+                              overlayShadowColors: Colors.white,
+                              overlayShadowSize: 0.7,
+                            ),
                     ),
                   ),
                 ),
                 SizedBox(
                   height: 1,
                 ),
-                bestDeals == null
-                    ? Center(
-                  child: SizedBox(
-                    height: 30,
-                    width: 30,
-                    child: CircularProgressIndicator(),
-                  ),
-                )
-                    : HorizontalView(
-                  productModel: bestDeals,
-                  title: 'Best Deals',
-                  axisDirection: Axis.horizontal,
-                  duration: 5,
-                ),
+                // bestDeals == null
+                //     ? Center(
+                //   child: SizedBox(
+                //     height: 30,
+                //     width: 30,
+                //     child: CircularProgressIndicator(),
+                //   ),
+                // )
+                //     : HorizontalView(
+                //   productModel: bestDeals,
+                //   title: 'Best Deals',
+                //   axisDirection: Axis.horizontal,
+                //   duration: 5,
+                // ),
                 SizedBox(
                   height: 10,
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 25),
-                  child: Text(
-                    'Popular this week',
-                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.w900),
-                  ),
-                ),
-                popular == null
-                    ? Center(
-                  child: SizedBox(
-                    height: 30,
-                    width: 30,
-                    child: CircularProgressIndicator(),
-                  ),
-                )
-                    : VerticalView(
-                  productModel: popular,
-                  duration: 5,
-                ),
+                // Padding(
+                //   padding: const EdgeInsets.only(left: 25),
+                //   child: Text(
+                //     'Popular this week',
+                //     style: TextStyle(fontSize: 22, fontWeight: FontWeight.w900),
+                //   ),
+                // ),
+                // popular == null
+                //     ? Center(
+                //   child: SizedBox(
+                //     height: 30,
+                //     width: 30,
+                //     child: CircularProgressIndicator(),
+                //   ),
+                // )
+                //     : VerticalView(
+                //   productModel: popular,
+                //   duration: 5,
+                // ),
               ],
             ),
           ),

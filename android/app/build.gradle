@@ -45,7 +45,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.fagnum.qirana"
+        applicationId "com.fagnum.disler"
         minSdkVersion 16
         targetSdkVersion 29
         versionCode flutterVersionCode.toInteger()

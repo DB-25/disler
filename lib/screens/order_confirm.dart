@@ -1,5 +1,5 @@
+import 'package:disler/model/product_model.dart';
 import 'package:flutter/material.dart';
-import 'package:qirana_app/model/product_model.dart';
 
 class OrderConfirm extends StatelessWidget {
   OrderConfirm({this.orderNo, this.products});

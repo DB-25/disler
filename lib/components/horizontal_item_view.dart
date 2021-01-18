@@ -1,8 +1,8 @@
+import 'package:disler/components/item_empty.dart';
+import 'package:disler/model/product_model.dart';
+import 'package:disler/screens/vertical_view_page_2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:qirana_app/components/item_empty.dart';
-import 'package:qirana_app/model/product_model.dart';
-import 'package:qirana_app/screens/vertical_view_page_2.dart';
 
 import 'item_view_vertical.dart';
 

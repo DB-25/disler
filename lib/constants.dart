@@ -1,5 +1,5 @@
+import 'package:disler/size_config.dart';
 import 'package:flutter/material.dart';
-import 'package:qirana_app/size_config.dart';
 
 const kPrimaryColor = Color(0xFFff5860);
 const kPrimaryLightColor = Color(0xFFFFECDF);
@@ -14,4 +14,3 @@ final headingStyle = TextStyle(
   color: Colors.black,
   height: 1.5,
 );
-

@@ -1,12 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:disler/components/icon_btn.dart';
+import 'package:disler/database/database.dart';
+import 'package:disler/model/product_model.dart';
+import 'package:disler/networking/api_driver.dart';
+import 'package:disler/screens/item_bottom_sheet.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:qirana_app/components/icon_btn.dart';
-import 'package:qirana_app/database/database.dart';
-import 'package:qirana_app/model/product_model.dart';
-import 'package:qirana_app/networking/api_driver.dart';
-import 'package:qirana_app/screens/item_bottom_sheet.dart';
 
 class ItemViewVertical extends StatefulWidget {
   final bool showQuantity;

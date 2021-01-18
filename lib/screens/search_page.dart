@@ -1,6 +1,6 @@
+import 'package:disler/model/product_model.dart';
 import 'package:flutter/material.dart';
-import 'package:qirana_app/components/horizontal_item_view.dart';
-import 'package:qirana_app/model/product_model.dart';
+
 import 'search_result.dart';
 
 class Search extends StatefulWidget {
@@ -167,12 +167,12 @@ class _SearchState extends State<Search> {
                   SizedBox(
                     height: 20,
                   ),
-                  HorizontalView(
-                    productModel: productModel,
-                    title: 'BEST DEALS',
-                    axisDirection: Axis.horizontal,
-                    duration: 1,
-                  ),
+                  // HorizontalView(
+                  //   productModel: productModel,
+                  //   title: 'BEST DEALS',
+                  //   axisDirection: Axis.horizontal,
+                  //   duration: 1,
+                  // ),
                 ],
               ),
             ),

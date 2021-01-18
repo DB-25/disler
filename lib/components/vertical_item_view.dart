@@ -1,7 +1,7 @@
+import 'package:disler/components/item_empty.dart';
+import 'package:disler/model/product_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:qirana_app/components/item_empty.dart';
-import 'package:qirana_app/model/product_model.dart';
 
 import 'item_view_vertical.dart';
 

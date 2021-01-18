@@ -1,10 +1,10 @@
 import 'package:carousel_pro/carousel_pro.dart';
+import 'package:disler/components/icon_btn.dart';
+import 'package:disler/database/database.dart';
+import 'package:disler/model/product_model.dart';
+import 'package:disler/networking/api_driver.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:qirana_app/components/icon_btn.dart';
-import 'package:qirana_app/database/database.dart';
-import 'package:qirana_app/model/product_model.dart';
-import 'package:qirana_app/networking/api_driver.dart';
 
 class ItemBottomSheet extends StatefulWidget {
   ItemBottomSheet({this.product});
@@ -72,10 +72,11 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
                           Hero(
                               tag: 'image',
                               child: Image(
-                                  image: NetworkImage(
-                                      ApiDriver().getBaseUrl()+'/wp' +
-                                          productModel.imageOne))),
-                          NetworkImage(ApiDriver().getBaseUrl()+'/wp' +
+                                  image: NetworkImage(ApiDriver().getBaseUrl() +
+                                      '/wp' +
+                                      productModel.imageOne))),
+                          NetworkImage(ApiDriver().getBaseUrl() +
+                              '/wp' +
                               productModel.imageOne),
                         ],
                         boxFit: BoxFit.contain,

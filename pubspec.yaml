@@ -1,7 +1,7 @@
-name: qirana_app
+name: disler
 description: A new Flutter project.
 
-version: 1.1.4+6
+version: 0.0.0+0
 
 environment:
   sdk: ">=2.1.0 <3.0.0"

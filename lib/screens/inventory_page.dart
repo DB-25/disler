@@ -1,9 +1,9 @@
+import 'package:disler/components/inventory_item.dart';
+import 'package:disler/model/inventory_model.dart';
+import 'package:disler/networking/ApiResponse.dart';
+import 'package:disler/networking/api_driver.dart';
 import 'package:flappy_search_bar/flappy_search_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:qirana_app/components/inventory_item.dart';
-import 'package:qirana_app/model/inventory_model.dart';
-import 'package:qirana_app/networking/api_driver.dart';
-import 'package:qirana_app/networking/ApiResponse.dart';
 
 class Inventory extends StatefulWidget {
   @override

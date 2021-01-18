@@ -1,10 +1,10 @@
 import 'dart:convert';
 
+import 'package:disler/model/order_detail_model.dart';
+import 'package:disler/model/order_model.dart';
+import 'package:disler/model/product_model.dart';
+import 'package:disler/networking/ApiResponse.dart';
 import 'package:http/http.dart' as http;
-import 'package:qirana_app/model/order_detail_model.dart';
-import 'package:qirana_app/model/order_model.dart';
-import 'package:qirana_app/model/product_model.dart';
-import 'package:qirana_app/networking/ApiResponse.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'ApiResponse.dart';

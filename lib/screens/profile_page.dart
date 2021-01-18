@@ -1,10 +1,12 @@
 import 'dart:io';
+
+import 'package:disler/screens/chat_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:qirana_app/screens/chat_screen.dart';
-import 'settings_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'settings_page.dart';
 
 class Profile extends StatefulWidget {
   @override

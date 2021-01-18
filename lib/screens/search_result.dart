@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
+import 'package:disler/components/item_horizontal_view.dart';
+import 'package:disler/model/product_model.dart';
+import 'package:disler/networking/ApiResponse.dart';
+import 'package:disler/networking/api_driver.dart';
 import 'package:flappy_search_bar/flappy_search_bar.dart';
-import 'package:qirana_app/model/product_model.dart';
-import 'package:qirana_app/networking/api_driver.dart';
-import 'package:qirana_app/networking/ApiResponse.dart';
-import 'package:qirana_app/components/item_horizontal_view.dart';
+import 'package:flutter/material.dart';
 
 class SearchResult extends StatefulWidget {
   @override
@@ -38,7 +38,7 @@ class _SearchResultState extends State<SearchResult> {
               child: Container(
 //                height: 500,
                 child: SearchBar(
-                  searchBarPadding: EdgeInsets.only(left: 5,right: 5),
+                  searchBarPadding: EdgeInsets.only(left: 5, right: 5),
                   hintText: 'Search a Product',
                   onSearch: search,
                   onError: (error) {

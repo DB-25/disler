@@ -1,4 +1,4 @@
-package com.example.qirana_app
+package com.fagnum.disler
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity

@@ -1,6 +1,6 @@
+import 'package:disler/database/database.dart';
+import 'package:disler/model/product_model.dart';
 import 'package:flutter/material.dart';
-import 'package:qirana_app/database/database.dart';
-import 'package:qirana_app/model/product_model.dart';
 
 // ignore: must_be_immutable
 class ItemHorizontalView extends StatefulWidget {

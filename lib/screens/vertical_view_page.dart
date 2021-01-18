@@ -1,11 +1,12 @@
+import 'package:disler/components/horizontal_category.dart';
+import 'package:disler/components/item_horizontal_view.dart';
+import 'package:disler/model/category_model.dart';
+import 'package:disler/model/product_model.dart';
+import 'package:disler/networking/ApiResponse.dart';
+import 'package:disler/networking/api_driver.dart';
 import 'package:flutter/material.dart';
-import 'package:qirana_app/components/item_horizontal_view.dart';
-import 'package:qirana_app/model/category_model.dart';
-import 'package:qirana_app/model/product_model.dart';
-import 'package:qirana_app/components/horizontal_category.dart';
-import 'package:qirana_app/networking/ApiResponse.dart';
+
 import 'search_result.dart';
-import 'package:qirana_app/networking/api_driver.dart';
 
 class VerticalViewPage extends StatefulWidget {
   final List<ProductModel> bestDeals;

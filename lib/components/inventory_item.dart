@@ -1,5 +1,5 @@
+import 'package:disler/model/inventory_model.dart';
 import 'package:flutter/material.dart';
-import 'package:qirana_app/model/inventory_model.dart';
 
 class InventoryItem extends StatelessWidget {
   final InventoryModel inventory;

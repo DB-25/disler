@@ -1,11 +1,12 @@
+import 'package:disler/components/input_field.dart';
+import 'package:disler/components/password_field.dart';
+import 'package:disler/model/login_model.dart';
+import 'package:disler/networking/api_driver.dart';
+import 'package:disler/screens/register_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:qirana_app/components/input_field.dart';
-import 'package:qirana_app/components/password_field.dart';
-import 'package:qirana_app/model/login_model.dart';
-import 'package:qirana_app/networking/api_driver.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:qirana_app/screens/register_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import 'home_page_2.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -134,7 +135,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             await prefs.setBool('autoLogin', true);
                             await prefs.setString('email', loginModel.email);
                             await prefs.setString('emailId', loginModel.email);
-                            await prefs.setString('accessToken', response.data[0]['accessToken']);
+                            await prefs.setString(
+                                'accessToken', response.data[0]['accessToken']);
                             await prefs.setString(
                                 'password', loginModel.password);
                             if (response.data[0]['userType'] == 'ROLE_ADMIN') {
@@ -176,39 +178,41 @@ class _LoginScreenState extends State<LoginScreen> {
                     SizedBox(
                       height: 20,
                     ),
-                    enableGoogleLogin ? RaisedButton(
-                      color: Color(0xFFff5860),
-                      child: Container(
-                        height: 50,
-                        width: double.infinity,
-                        child: Center(
-                          child: Text(
-                            "Log in with GOOGLE",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
+                    enableGoogleLogin
+                        ? RaisedButton(
+                            color: Color(0xFFff5860),
+                            child: Container(
+                              height: 50,
+                              width: double.infinity,
+                              child: Center(
+                                child: Text(
+                                  "Log in with GOOGLE",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 20,
+                                  ),
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      onPressed: () async {
-                        SharedPreferences prefs =
-                            await SharedPreferences.getInstance();
-                        _handleSignIn();
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            onPressed: () async {
+                              SharedPreferences prefs =
+                                  await SharedPreferences.getInstance();
+                              _handleSignIn();
 
-                        await prefs.setBool('autoLogin', true);
-                        setState(() {
-                          autoLoginBool.value = true;
-                          // ignore: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
-                          autoLoginBool.notifyListeners();
-                        });
+                              await prefs.setBool('autoLogin', true);
+                              setState(() {
+                                autoLoginBool.value = true;
+                                // ignore: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
+                                autoLoginBool.notifyListeners();
+                              });
 
-                        Navigator.pop(context);
-                      },
-                    ) : Container(),
+                              Navigator.pop(context);
+                            },
+                          )
+                        : Container(),
                     SizedBox(
                       height: MediaQuery.of(context).size.height - 600,
                     ),

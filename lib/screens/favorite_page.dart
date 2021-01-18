@@ -1,7 +1,7 @@
+import 'package:disler/components/vertical_item_view.dart';
+import 'package:disler/database/database.dart';
+import 'package:disler/model/product_model.dart';
 import 'package:flutter/material.dart';
-import 'package:qirana_app/components/vertical_item_view.dart';
-import 'package:qirana_app/model/product_model.dart';
-import 'package:qirana_app/database/database.dart';
 
 class Fav extends StatefulWidget {
   @override
@@ -65,7 +65,8 @@ class _FavState extends State<Fav> {
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 20.0, top: 10),
-                    child: Text('Favourites',
+                    child: Text(
+                      'Favourites',
                       style: TextStyle(
                           color: Color(0xFFff5860),
                           fontSize: 25,
