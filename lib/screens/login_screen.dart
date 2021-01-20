@@ -2,6 +2,7 @@ import 'package:disler/components/input_field.dart';
 import 'package:disler/components/password_field.dart';
 import 'package:disler/model/login_model.dart';
 import 'package:disler/networking/api_driver.dart';
+import 'package:disler/screens/home_screen.dart';
 import 'package:disler/screens/register_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -45,8 +46,17 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void initState() {
+    // _autoLogIn();
     super.initState();
   }
+
+  // Future<void> _autoLogIn() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   bool loggedIn = prefs.containsKey('accessToken');
+  //   if (loggedIn == true)
+  //     Navigator.pushReplacement(
+  //         context, MaterialPageRoute(builder: (context) => HomeScreen()));
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -63,14 +73,14 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    IconButton(
-                      icon: Icon(Icons.arrow_back),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                    ),
+                    // IconButton(
+                    //   icon: Icon(Icons.arrow_back),
+                    //   onPressed: () {
+                    //     Navigator.pop(context);
+                    //   },
+                    // ),
                     SizedBox(
-                      height: 20,
+                      height: 40,
                     ),
                     Text(
                       'LOG IN',
@@ -85,8 +95,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     Padding(
                       padding: const EdgeInsets.only(bottom: 15.0),
                       child: InputField(
-                        hintText: 'Enter your Email',
-                        validator: emailValidator(),
+                        hintText: 'Enter your Email / Phone Number',
+                        // validator: emailValidator(),
                         onSaved: (val) => formData['email'] = val,
                       ),
                     ),
@@ -139,6 +149,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                 'accessToken', response.data[0]['accessToken']);
                             await prefs.setString(
                                 'password', loginModel.password);
+                            await prefs.setString(
+                                'userType', response.data[0]['userType']);
                             if (response.data[0]['userType'] == 'ROLE_ADMIN') {
                               prefs.setBool('admin', true);
                               setState(() {
@@ -153,6 +165,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                   title: 'Login Successful',
                                   body: 'ADMIN LOGIN.');
                               Navigator.pop(context);
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => HomeScreen()));
+                              // _autoLogIn();
                             } else {
                               setState(() {
                                 admin.value = false;
@@ -166,12 +183,18 @@ class _LoginScreenState extends State<LoginScreen> {
                                   title: 'Login Successful',
                                   body: 'USER LOGIN.');
                               Navigator.pop(context);
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => HomeScreen()));
+                              // _autoLogIn();
                             }
                           }
                         } else {
                           _showMyDialog(
                               title: 'Login Failed',
-                              body: 'Please check your email and password.');
+                              body:
+                                  'Please check your Email / Phone No and password.');
                         }
                       },
                     ),

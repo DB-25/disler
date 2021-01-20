@@ -10,7 +10,16 @@ class RegisterScreen extends StatefulWidget {
 
 final _formKey = GlobalKey<FormState>();
 final scaffoldKey = GlobalKey<ScaffoldState>();
-var formData = {'email': '', 'password': '', 'confirmPassword': ''};
+var formData = {
+  'email': '',
+  'password': '',
+  'confirmPassword': '',
+  'name': '',
+  'shopName': '',
+  'contactNumber': '',
+  'city': '',
+  'sReferral': '',
+};
 
 class _RegisterScreenState extends State<RegisterScreen> {
   @override
@@ -50,9 +59,64 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     Padding(
                       padding: const EdgeInsets.only(bottom: 15.0),
                       child: InputField(
+                        hintText: 'Name',
+                        validator: emptyValidator('Enter a Name'),
+                        onSaved: (val) => formData['name'] = val,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 15.0),
+                      child: InputField(
+                        hintText: 'Shop Name',
+                        validator: emptyValidator('Enter a Shop Name'),
+                        onSaved: (val) => formData['shopName'] = val,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 15.0),
+                      child: InputField(
                         hintText: 'Enter your Email',
-                        validator: emailValidator(),
+                        // validator: emailValidator(),
                         onSaved: (val) => formData['email'] = val,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 15.0),
+                      child: InputField(
+                        hintText: 'Contact Number',
+                        validator: emptyValidator('Enter a Contact Number'),
+                        onSaved: (val) => formData['contactNumber'] = val,
+                      ),
+                    ),
+                    // Padding(
+                    //   padding: const EdgeInsets.only(bottom: 15.0),
+                    //   child: InputField(
+                    //     hintText: 'Address',
+                    //     validator: emptyValidator('Enter an Address'),
+                    //     onSaved: (val) => formData['address'] = val,
+                    //   ),
+                    // ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 15.0),
+                      child: InputField(
+                        hintText: 'City',
+                        validator: emptyValidator('Enter a City'),
+                        onSaved: (val) => formData['city'] = val,
+                      ),
+                    ),
+                    // Padding(
+                    //   padding: const EdgeInsets.only(bottom: 15.0),
+                    //   child: InputField(
+                    //     hintText: 'Pincode',
+                    //     validator: emptyValidator('Enter a Pincode'),
+                    //     onSaved: (val) => formData['pincode'] = val,
+                    //   ),
+                    // ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 15.0),
+                      child: InputField(
+                        hintText: 'Referred By',
+                        onSaved: (val) => formData['sReferral'] = val,
                       ),
                     ),
                     Padding(
@@ -110,7 +174,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         final response = await apiDriver.register(
                             formData['email'],
                             formData['password'],
-                            formData['confirmPassword']);
+                            formData['confirmPassword'],
+                            formData['name'],
+                            formData['shopName'],
+                            formData['sReferral'],
+                            formData['contactNumber'],
+                            formData['city']);
                         if (response != null) {
                           if (response.status) {
                             _showMyDialog(

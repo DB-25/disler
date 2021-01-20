@@ -68,6 +68,7 @@ class CategoryCard extends StatelessWidget {
                 url: url,
                 extendedUrl: getCategoryUrl(text1),
                 bestDeals: null,
+                brandData: false,
               ),
             ),
           );

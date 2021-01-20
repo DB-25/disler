@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:disler/model/banner_model.dart';
+import 'package:disler/model/brand_model.dart';
 import 'package:disler/model/category_model.dart';
 import 'package:disler/model/product_model.dart';
 import 'package:disler/networking/ApiResponse.dart';
@@ -85,6 +86,8 @@ class _HomeScreenState extends State<HomeScreen> {
   List<CategoryModel> categoryModel = List<CategoryModel>();
   List<ProductModel> popularProductModel = List<ProductModel>();
   List<ProductModel> bestDealModel = List<ProductModel>();
+  List<BrandModel> brandDetails = List<BrandModel>();
+  List<BrandModel> distributorDetails = List<BrandModel>();
 
   void getDataForAll() async {
     // ApiResponse responseBanner = await apiDriver.getData('banner-all');
@@ -95,6 +98,25 @@ class _HomeScreenState extends State<HomeScreen> {
     if (responseCategory != null) getCategoryDetails(responseCategory.data);
     // if (responsePopularDeals != null) getPopularDealsDetails(responsePopularDeals.data);
     // if (responseBestDeals != null) getBestDealsDetails(responseBestDeals.data);
+    ApiResponse responseBrand = await apiDriver.getData('fmcg-brand-all');
+    ApiResponse responseDistributor =
+        await apiDriver.getData('fmcg-distributor-all');
+    if (responseDistributor != null)
+      getDistributorDetails(responseDistributor.data);
+    if (responseBrand != null) getBrandDetails(responseBrand.data);
+  }
+
+  void getBrandDetails(List data) {
+    for (var i = 0; i < data.length; i++) {
+      brandDetails.add(BrandModel.fromMap(data[i]));
+    }
+    print(brandDetails[1].name);
+  }
+
+  void getDistributorDetails(List data) {
+    for (var i = 0; i < data.length; i++) {
+      distributorDetails.add(BrandModel.fromMap(data[i]));
+    }
   }
 
   void getPopularDealsDetails(List data) {
@@ -151,6 +173,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       bestDealModel: popularProductModel,
                       bannerModel: bannerModel,
                       categoryModel: categoryModel,
+                      brandModel: brandDetails,
+                      distributorModel: distributorDetails,
                     );
                 break;
               case searchRoute:

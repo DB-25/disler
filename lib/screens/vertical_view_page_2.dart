@@ -15,19 +15,22 @@ class VerticalViewPage2 extends StatefulWidget {
   final String extendedUrl;
   final String title;
   final List subCategory;
+  final bool brandData;
   VerticalViewPage2(
       {this.subCategory,
       this.title,
       this.url,
       this.extendedUrl,
-      this.bestDeals});
+      this.bestDeals,
+      this.brandData});
   @override
   _VerticalViewPage2State createState() => _VerticalViewPage2State(
       bestDeals: bestDeals,
       subCategory: subCategory,
       title: title,
       url: url,
-      extendedUrl: extendedUrl);
+      extendedUrl: extendedUrl,
+      brandData: brandData);
 }
 
 class _VerticalViewPage2State extends State<VerticalViewPage2> {
@@ -36,13 +39,15 @@ class _VerticalViewPage2State extends State<VerticalViewPage2> {
   final String extendedUrl;
   final String title;
   final List subCategory;
+  final bool brandData;
 
   _VerticalViewPage2State(
       {this.bestDeals,
       this.subCategory,
       this.title,
       this.url,
-      this.extendedUrl});
+      this.extendedUrl,
+      this.brandData});
 
   final List<CategoryModel> categoryModel = List<CategoryModel>();
   List<ProductModel> productModel = List<ProductModel>();
@@ -99,7 +104,11 @@ class _VerticalViewPage2State extends State<VerticalViewPage2> {
       if (tempList != null) tempList.clear();
       if (url != null) {
         ApiResponse response = await apiDriver.getCategoryData(
-            url: url, extendedUrl: extendedUrl, index: index);
+            url: url,
+            extendedUrl: extendedUrl,
+            index: index,
+            otherData: brandData,
+            brand: extendedUrl == 'product-by-fmcg-brand' ? true : false);
         if (response != null) getNewData(response.data);
         if (response == null) {
           tempList = null;

@@ -73,13 +73,25 @@ class ApiDriver {
   }
 
   Future<ApiResponse<dynamic>> register(
-      String email, String password, String confirmPassword) async {
-    final http.Response response = await http.post(getAuthUrl() + '/signup',
+      String email,
+      String password,
+      String confirmPassword,
+      String name,
+      String shopName,
+      String sReferral,
+      String contactNumber,
+      String city) async {
+    final http.Response response = await http.post(getAuthUrl() + '/signup-ret',
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
         body: jsonEncode(<String, String>{
+          "name": name,
           'companyId': companyId,
+          "shopName": shopName,
+          "sReferral": sReferral,
+          "contactNumber": contactNumber,
+          "city": city,
           'email': email,
           'password': password,
           'confirmPassword': confirmPassword
@@ -104,19 +116,39 @@ class ApiDriver {
   }
 
   Future<ApiResponse<dynamic>> getCategoryData(
-      {String url, String extendedUrl, int index}) async {
+      {String url,
+      String extendedUrl,
+      int index,
+      bool otherData,
+      bool brand}) async {
     final http.Response response = await http.post(
       getBaseUrl() + "/w-ecom-store/" + extendedUrl,
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: jsonEncode(
-        <String, String>{
-          'companyId': companyId,
-          'url': url,
-          'index': index.toString()
-        },
-      ),
+      body: otherData
+          ? brand
+              ? jsonEncode(
+                  <String, String>{
+                    'companyId': companyId,
+                    'fmcgBrandId': url,
+                    'index': index.toString()
+                  },
+                )
+              : jsonEncode(
+                  <String, String>{
+                    'companyId': companyId,
+                    'fmcgDistributorId': url,
+                    'index': index.toString()
+                  },
+                )
+          : jsonEncode(
+              <String, String>{
+                'companyId': companyId,
+                'url': url,
+                'index': index.toString()
+              },
+            ),
     );
     print(response.statusCode);
     print(response.body);
