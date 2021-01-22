@@ -5,6 +5,7 @@ import 'package:disler/networking/api_driver.dart';
 import 'package:disler/screens/home_screen.dart';
 import 'package:disler/screens/register_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -79,14 +80,30 @@ class _LoginScreenState extends State<LoginScreen> {
                     //     Navigator.pop(context);
                     //   },
                     // ),
+                    Center(
+                      child: Text(
+                        'DISLER',
+                        style: GoogleFonts.notoSerif(
+                          fontSize: 40,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xFFff5860),
+                          letterSpacing: 4,
+                        ),
+                        // TextStyle(
+                        //     fontFamily: 'Muli',
+                        //     color: Color(0xFFff5860),
+                        //     fontSize: 35,
+                        //     fontWeight: FontWeight.w900),
+                      ),
+                    ),
                     SizedBox(
-                      height: 40,
+                      height: 90,
                     ),
                     Text(
-                      'LOG IN',
+                      'Login',
                       style: TextStyle(
                           color: Color(0xFFff5860),
-                          fontSize: 35,
+                          fontSize: 28,
                           fontWeight: FontWeight.w900),
                     ),
                     SizedBox(
@@ -120,7 +137,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         width: double.infinity,
                         child: Center(
                           child: Text(
-                            "Log in",
+                            "Login",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 20,
@@ -243,7 +260,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Text(
-                          'Don\'t have an account',
+                          'Don\'t have an account?',
                           style: TextStyle(
                               fontSize: 17, fontWeight: FontWeight.w600),
                         ),
@@ -255,7 +272,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     builder: (context) => RegisterScreen()));
                           },
                           child: Text(
-                            'SignUp',
+                            'Sign Up',
                             style: TextStyle(
                                 color: Color(0xFFff5860),
                                 fontWeight: FontWeight.w700,

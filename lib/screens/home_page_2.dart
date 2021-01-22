@@ -12,7 +12,7 @@ import 'package:disler/model/product_model.dart';
 import 'package:disler/networking/api_driver.dart';
 import 'package:disler/screens/address_page.dart';
 import 'package:disler/screens/login_screen.dart';
-import 'package:disler/screens/manual_order_page.dart';
+import 'package:disler/screens/order_history.dart';
 import 'package:disler/screens/vertical_view_page_2.dart';
 import 'package:disler/size_config.dart';
 import 'package:flutter/material.dart';
@@ -148,6 +148,84 @@ class _HomePage2State extends State<HomePage2>
 
   bool loading = true;
   TabController _controller;
+
+  Color getColor(int num) {
+    num = num % 5;
+    if (num == 0) return Color(0xff066E4B);
+    if (num == 1) return Colors.blueAccent;
+    if (num == 2) return Colors.brown;
+    if (num == 3) return Colors.redAccent;
+    if (num == 4) return Color(0xffFEBE50);
+    return Color(0xff183B8C);
+  }
+
+  Widget displayBrand(
+      List<BrandModel> data, double itemWidth, double itemHeight) {
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: GridView.count(
+        // primary: true,
+        physics: new NeverScrollableScrollPhysics(),
+        childAspectRatio: (itemWidth.round() / itemHeight.round()),
+        crossAxisCount: 2,
+        shrinkWrap: true,
+        children: List.generate(
+          data.length,
+          (index) => GestureDetector(
+            onTap: () async {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => VerticalViewPage2(
+                    subCategory: null,
+                    title: data[index].name,
+                    url: _controller.index == 0
+                        ? data[index].fmcgBrandId
+                        : data[index].fmcgDistributorId,
+                    extendedUrl: _controller.index == 0
+                        ? 'product-by-fmcg-brand'
+                        : 'product-by-fmcg-distributor',
+                    bestDeals: null,
+                    brandData: true,
+                  ),
+                ),
+              );
+            },
+            child: Stack(children: [
+              Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: Container(
+                  width: itemWidth,
+                  height: itemHeight,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      color: getColor(index)),
+                ),
+              ),
+              Container(
+                width: itemWidth - 10,
+                height: itemHeight - 8,
+                child: Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: Center(
+                    child: Text(
+                      data[index].name,
+                      maxLines: 2,
+                      softWrap: true,
+                      style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w900),
+                    ),
+                  ),
+                ),
+              ),
+            ]),
+          ),
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -502,32 +580,27 @@ class _HomePage2State extends State<HomePage2>
                     child: TabBarView(
                       controller: _controller,
                       children: [
-                        Flexible(
-                          child: Container(
-                            child: brand != null
-                                ? displayBrand(brand, itemWidth, itemHeight)
-                                : Padding(
-                                    padding: const EdgeInsets.all(20.0),
-                                    child: Text(
-                                      'No Data Found',
-                                      style: TextStyle(fontSize: 20),
-                                    ),
+                        Container(
+                          child: brand != null
+                              ? displayBrand(brand, itemWidth, itemHeight)
+                              : Padding(
+                                  padding: const EdgeInsets.all(20.0),
+                                  child: Text(
+                                    'No Data Found',
+                                    style: TextStyle(fontSize: 20),
                                   ),
-                          ),
+                                ),
                         ),
-                        Flexible(
-                          child: Container(
-                            child: distributor != null
-                                ? displayBrand(
-                                    distributor, itemWidth, itemHeight)
-                                : Padding(
-                                    padding: const EdgeInsets.all(20.0),
-                                    child: Text(
-                                      'No Data Found',
-                                      style: TextStyle(fontSize: 20),
-                                    ),
+                        Container(
+                          child: distributor != null
+                              ? displayBrand(distributor, itemWidth, itemHeight)
+                              : Padding(
+                                  padding: const EdgeInsets.all(20.0),
+                                  child: Text(
+                                    'No Data Found',
+                                    style: TextStyle(fontSize: 20),
                                   ),
-                          ),
+                                ),
                         ),
                       ],
                     ),
@@ -571,83 +644,6 @@ class _HomePage2State extends State<HomePage2>
                 // ),
               ],
             ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Color getColor(int num) {
-    num = num % 5;
-    if (num == 0) return Color(0xff066E4B);
-    if (num == 1) return Colors.blueAccent;
-    if (num == 2) return Colors.brown;
-    if (num == 3) return Colors.redAccent;
-    if (num == 4) return Color(0xffFEBE50);
-    return Color(0xff183B8C);
-  }
-
-  Widget displayBrand(
-      List<BrandModel> data, double itemWidth, double itemHeight) {
-    return Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: GridView.count(
-        // primary: true,
-        physics: new NeverScrollableScrollPhysics(),
-        childAspectRatio: (itemWidth / itemHeight),
-        crossAxisCount: 2,
-        shrinkWrap: true,
-        children: List.generate(
-          data.length,
-          (index) => GestureDetector(
-            onTap: () async {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => VerticalViewPage2(
-                    subCategory: null,
-                    title: data[index].name,
-                    url: _controller.index == 0
-                        ? data[index].fmcgBrandId
-                        : data[index].fmcgDistributorId,
-                    extendedUrl: _controller.index == 0
-                        ? 'product-by-fmcg-brand'
-                        : 'product-by-fmcg-distributor',
-                    bestDeals: null,
-                  ),
-                ),
-              );
-            },
-            child: Stack(children: [
-              Padding(
-                padding: const EdgeInsets.all(5.0),
-                child: Container(
-                  width: itemWidth,
-                  height: itemHeight,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5),
-                      color: getColor(index)),
-                ),
-              ),
-              Container(
-                width: itemWidth - 20,
-                height: itemHeight - 8,
-                child: Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: Center(
-                    child: Text(
-                      data[index].name,
-                      maxLines: 2,
-                      softWrap: true,
-                      style: TextStyle(
-                          fontSize: 18,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w900),
-                    ),
-                  ),
-                ),
-              ),
-            ]),
           ),
         ),
       ),

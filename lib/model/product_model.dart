@@ -3,28 +3,30 @@ class ProductModel {
   String name;
   String metaDescription;
   String description;
-  String url;
-  double discount;
   String imageOne;
   String imageTwo;
   double price;
-  double retailPrice;
-  double wholesalePrice;
   double mrp;
   String status;
-  String size;
-  String quantity;
+  int quantity;
+  String item;
+  String weight;
+  String ecomInventoryId;
+  double minQty;
+  String url;
+  String sellingQuantity;
 
   static final columns = [
-    "productId",
     "name",
     "metaDescription",
     "price",
-    "retailPrice",
     "mrp",
+    "productId",
     "imageOne",
-    "size",
+    "weight",
+    "ecomInventoryId",
     "quantity",
+    "minQty",
     "cart",
     "fav"
   ];
@@ -35,16 +37,17 @@ class ProductModel {
       this.metaDescription,
       this.description,
       this.url,
-      this.discount,
-      this.retailPrice,
-      this.wholesalePrice,
+      this.minQty,
+      this.ecomInventoryId,
+      this.weight,
       this.mrp,
       this.imageOne,
       this.imageTwo,
       this.price,
       this.status,
-      this.size,
-      this.quantity});
+      this.item,
+      this.quantity,
+      this.sellingQuantity});
 
   factory ProductModel.fromMap(Map<String, dynamic> map) {
     return ProductModel(
@@ -56,33 +59,58 @@ class ProductModel {
       description:
           map.containsKey('description') ? (map['description'] ?? '') : '',
       url: map.containsKey('url') ? (map['url'] ?? '') : '',
-      discount: map.containsKey('discount') ? (map['discount'] ?? '') : 0.0,
-      retailPrice: map.containsKey('retailPrice')
-          ? (map['retailPrice'] + 0.0 ?? '')
-          : 0.0,
-      wholesalePrice: map.containsKey('wholesalePrice')
-          ? (map['wholesalePrice'] + 0.0 ?? '')
-          : 0.0,
+      ecomInventoryId: map.containsKey('ecomInventoryId')
+          ? (map['ecomInventoryId'] ?? '')
+          : '',
+      minQty: map.containsKey('minQty') ? (map['minQty'] + 0.0 ?? '') : 0.0,
+      item: map.containsKey('item') ? (map['item'] ?? '') : '',
       mrp: map.containsKey('mrp') ? (map['mrp'] + 0.0 ?? '') : 0.0,
       imageOne: map.containsKey('imageOne') ? (map['imageOne'] ?? '') : '',
       imageTwo: map.containsKey('imageTwo') ? (map['imageTwo'] ?? '') : '',
       price: map.containsKey('price') ? (map['price'] + 0.0 ?? '') : 0.0,
       status: map.containsKey('status') ? (map['status'] ?? '') : '',
-      size: map.containsKey('size') ? (map['size'] ?? '') : '',
-      quantity: map.containsKey('quantity') ? (map['quantity'] ?? '') : '0',
+      weight: map.containsKey('weight') ? (map['weight'] ?? '') : '',
+      sellingQuantity:
+          map.containsKey('quantity') ? (map['quantity'] ?? '') : '',
+      quantity: 0,
     );
   }
 
+  factory ProductModel.fromMap2(Map<String, dynamic> map) {
+    return ProductModel(
+      productId: map.containsKey('productId') ? (map['productId'] ?? '') : '',
+      name: map.containsKey('name') ? (map['name'] ?? '') : '',
+      metaDescription: map.containsKey('metaDescription')
+          ? (map['metaDescription'] ?? '')
+          : '',
+      description:
+          map.containsKey('description') ? (map['description'] ?? '') : '',
+      url: map.containsKey('url') ? (map['url'] ?? '') : '',
+      ecomInventoryId: map.containsKey('ecomInventoryId')
+          ? (map['ecomInventoryId'] ?? '')
+          : '',
+      minQty: map.containsKey('minQty') ? (map['minQty'] + 0.0 ?? '') : 0.0,
+      item: map.containsKey('item') ? (map['item'] ?? '') : '',
+      mrp: map.containsKey('mrp') ? (map['mrp'] + 0.0 ?? '') : 0.0,
+      imageOne: map.containsKey('imageOne') ? (map['imageOne'] ?? '') : '',
+      imageTwo: map.containsKey('imageTwo') ? (map['imageTwo'] ?? '') : '',
+      price: map.containsKey('price') ? (map['price'] + 0.0 ?? '') : 0.0,
+      status: map.containsKey('status') ? (map['status'] ?? '') : '',
+      weight: map.containsKey('weight') ? (map['weight'] ?? '') : '',
+      quantity: map.containsKey('quantity') ? (map['quantity'] ?? '') : '',
+    );
+  }
   Map<String, dynamic> toMap(int cart, int fav) => {
-        "productId": productId,
+        "ecomInventoryId": ecomInventoryId,
         "name": name,
         "metaDescription": metaDescription,
         "price": price,
-        "retailPrice": retailPrice,
         "mrp": mrp,
+        "productId": productId,
         "imageOne": imageOne,
-        "size": size,
+        "weight": weight,
         "quantity": quantity,
+        "minQty": minQty,
         "cart": cart,
         "fav": fav
       };

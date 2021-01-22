@@ -11,7 +11,8 @@ import 'ApiResponse.dart';
 
 class ApiDriver {
   final String environment = "test";
-  final String companyId = 'ff80818171b2ad0501720ab097fd0006';
+  // final String companyId = 'ff80818171b2ad0501720ab097fd0006';
+  final String companyId = '402880ea77243ec40177244020840000';
 
   getBaseUrl() {
     return environment == "live"
@@ -80,12 +81,17 @@ class ApiDriver {
       String shopName,
       String sReferral,
       String contactNumber,
-      String city) async {
-    final http.Response response = await http.post(getAuthUrl() + '/signup-ret',
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode(<String, String>{
+      String city,
+      String address,
+      String area,
+      String pincode) async {
+    final http.Response response = await http.post(
+      getAuthUrl() + '/signup-ret',
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(
+        <String, String>{
           "name": name,
           'companyId': companyId,
           "shopName": shopName,
@@ -94,8 +100,13 @@ class ApiDriver {
           "city": city,
           'email': email,
           'password': password,
-          'confirmPassword': confirmPassword
-        }));
+          'confirmPassword': confirmPassword,
+          'address': address,
+          'area': area,
+          'pincode': pincode,
+        },
+      ),
+    );
     print(response.statusCode);
     print(response.body);
     if (response.statusCode == 302) {
@@ -196,30 +207,38 @@ class ApiDriver {
       List<ProductModel> productModel}) async {
     int i;
     List<OrderProduct> order = List();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String emailId = prefs.getString('emailId');
     for (i = 0; i < productModel.length; i++) {
       order.add(OrderProduct(
-        productId: productModel[i].productId,
-        quantity: productModel[i].quantity,
-        size: productModel[i].size,
-      ));
+          ecomInventoryId: productModel[i].ecomInventoryId,
+          quantity: productModel[i].quantity.toString(),
+          weight: productModel[i].weight,
+          productId: productModel[i].productId));
     }
 
     String bodyStr = jsonEncode(<String, dynamic>{
-      "name": orderDetailModel.name,
-      "area": orderDetailModel.area,
-      "city": orderDetailModel.city,
+      // "name": orderDetailModel.name,
+      // "area": orderDetailModel.area,
+      // "city": orderDetailModel.city,
       "companyId": companyId,
-      "contactNumber": orderDetailModel.contactNumber,
-      "contestName": orderDetailModel.contestName,
-      "country": orderDetailModel.country,
-      "emailId": orderDetailModel.emailId,
-      "houseNo": orderDetailModel.houseNo,
-      "paymentOption": orderDetailModel.paymentOption,
-      "paymentOrderId": orderDetailModel.paymentOrderId,
-      "referralCode": orderDetailModel.referralCode,
-      "state": orderDetailModel.state,
+      // "contactNumber": orderDetailModel.contactNumber,
+      // "contestName": orderDetailModel.contestName,
+      // "country": orderDetailModel.country,
+      "emailId": emailId,
+      // "houseNo": orderDetailModel.houseNo,
+      // "paymentOption": orderDetailModel.paymentOption,
+      // "paymentOrderId": orderDetailModel.paymentOrderId,
+      // "referralCode": orderDetailModel.referralCode,
+      // "state": orderDetailModel.state,
       "products": order
     });
+
+    print(jsonEncode(<String, dynamic>{
+      "companyId": companyId,
+      "emailId": emailId,
+      "products": order
+    }));
 
     final http.Response response =
         await http.post(getBaseUrl() + '/w-ecom-store/order-submit',
@@ -277,7 +296,7 @@ class ApiDriver {
     String emailId = prefs.getString('emailId');
     String accessToken = prefs.getString('accessToken');
     final http.Response response =
-        await http.post(getBaseUrl() + '/ecom-store/get-order',
+        await http.post(getBaseUrl() + '/w-ecom-store/get-order',
             headers: <String, String>{
               'Content-Type': 'application/json; charset=UTF-8',
               'Authorization': "Bearer " + accessToken,

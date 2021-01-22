@@ -52,7 +52,7 @@ class _ItemViewVerticalState extends State<ItemViewVertical> {
   void initState() {
     fToast = FToast();
     fToast.init(context);
-    if (productModel != null) quantity = int.parse(productModel.quantity);
+    if (productModel != null) quantity = productModel.minQty.round();
     super.initState();
   }
 
@@ -127,9 +127,9 @@ class _ItemViewVerticalState extends State<ItemViewVertical> {
                   ),
                 ),
                 Expanded(
-                  flex: 1,
+                  flex: 2,
                   child: SizedBox(
-                    height: 30,
+                    height: 40,
                     child: Padding(
                       padding: EdgeInsets.only(left: 8.0, top: 5),
                       child: Container(
@@ -138,6 +138,7 @@ class _ItemViewVerticalState extends State<ItemViewVertical> {
                           style: TextStyle(
                               fontSize: 14, fontWeight: FontWeight.bold),
                           overflow: TextOverflow.ellipsis,
+                          maxLines: 2,
                         ),
                       ),
                     ),
@@ -162,7 +163,27 @@ class _ItemViewVerticalState extends State<ItemViewVertical> {
                                 color: Colors.black54),
                             children: <TextSpan>[
                               TextSpan(
-                                text: productModel.size,
+                                text: productModel.weight,
+                                style: TextStyle(
+                                    fontSize: 15, fontWeight: FontWeight.bold),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                      trailing: Container(
+                        // width: 125,
+                        // alignment: Alignment(-1.2, -0.5),
+                        child: RichText(
+                          text: TextSpan(
+                            text: /*'Size: '*/ "Qty: ",
+                            style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black54),
+                            children: <TextSpan>[
+                              TextSpan(
+                                text: productModel.sellingQuantity,
                                 style: TextStyle(
                                     fontSize: 15, fontWeight: FontWeight.bold),
                               )
@@ -214,16 +235,14 @@ class _ItemViewVerticalState extends State<ItemViewVertical> {
                               child: (quantity == 0)
                                   ? Text(
                                       '₹ ' +
-                                          productModel.retailPrice
-                                              .round()
-                                              .toString(),
+                                          productModel.price.round().toString(),
                                       style: TextStyle(
                                           fontWeight: FontWeight.w700,
                                           fontSize: 17),
                                     )
                                   : Text(
                                       '₹ ' +
-                                          (productModel.retailPrice * quantity)
+                                          (productModel.price * quantity)
                                               .round()
                                               .toString(),
                                       style: TextStyle(
@@ -239,8 +258,8 @@ class _ItemViewVerticalState extends State<ItemViewVertical> {
                                           productModel.mrp.round().toString(),
                                       style: TextStyle(
                                           color: Colors.grey[600],
-                                          decoration:
-                                              TextDecoration.lineThrough,
+                                          // decoration:
+                                          //     TextDecoration.lineThrough,
                                           fontWeight: FontWeight.w500,
                                           fontSize: 14),
                                     )
@@ -251,8 +270,8 @@ class _ItemViewVerticalState extends State<ItemViewVertical> {
                                               .toString(),
                                       style: TextStyle(
                                           color: Colors.grey[600],
-                                          decoration:
-                                              TextDecoration.lineThrough,
+                                          // decoration:
+                                          //     TextDecoration.lineThrough,
                                           fontWeight: FontWeight.w500,
                                           fontSize: 14),
                                     ),
@@ -273,24 +292,55 @@ class _ItemViewVerticalState extends State<ItemViewVertical> {
                                         width: 30,
                                         child: FittedBox(
                                           child: IconBtn(
-                                              icon: Icon(Icons.remove,
-                                                  color: Colors.black54),
-                                              press: () {
-                                                setState(() {
-                                                  if (quantity > 0) quantity--;
-                                                  productModel.quantity =
-                                                      quantity.toString();
-                                                  if (quantity == 0)
-                                                    SQLiteDbProvider.db.delete(
-                                                        productModel.productId);
-                                                  else
+                                            icon: Icon(Icons.remove,
+                                                color: Colors.black54),
+                                            press: () async {
+                                              bool hasItemInCart =
+                                                  await SQLiteDbProvider.db
+                                                      .checkItem(productModel
+                                                          .ecomInventoryId);
+                                              setState(
+                                                () {
+                                                  //normal deletion
+                                                  if (quantity >
+                                                      productModel.minQty
+                                                          .round()) {
+                                                    quantity--;
+                                                    productModel.quantity =
+                                                        quantity;
                                                     SQLiteDbProvider.db.update(
                                                         productModel, 1, 0);
-                                                  if (quantity != 0)
                                                     _showToast(
-                                                        'Item added to Cart');
-                                                });
-                                              }), /*FloatingActionButton(
+                                                        'Item updated in Cart');
+                                                  }
+                                                  // else if(quantity==productModel.minQty){}
+                                                  //full deletion
+                                                  else if (quantity ==
+                                                      productModel.minQty
+                                                          .round()) {
+                                                    if (hasItemInCart) {
+                                                      SQLiteDbProvider.db
+                                                          .delete(productModel
+                                                              .ecomInventoryId);
+                                                      _showToast(
+                                                          'Item Deleted from Cart');
+                                                    } else {
+                                                      _showToast(
+                                                          'Order min Qty is ' +
+                                                              productModel
+                                                                  .minQty
+                                                                  .round()
+                                                                  .toString());
+                                                    }
+                                                    quantity = productModel
+                                                        .minQty
+                                                        .round();
+                                                  }
+                                                },
+                                              );
+                                            },
+                                          ),
+                                          /*FloatingActionButton(
                                             elevation: 0,
                                             backgroundColor: Colors.white,
                                             onPressed: () {
@@ -339,24 +389,49 @@ class _ItemViewVerticalState extends State<ItemViewVertical> {
                                         width: 30,
                                         child: FittedBox(
                                           child: IconBtn(
-                                              icon: Icon(Icons.add,
-                                                  color: Colors.black54),
-                                              press: () {
-                                                setState(() {
-                                                  quantity++;
-                                                  productModel.quantity =
-                                                      quantity.toString();
-                                                  if (quantity == 1)
-                                                    SQLiteDbProvider.db.insert(
-                                                        productModel, 1, 0);
-                                                  else
+                                            icon: Icon(Icons.add,
+                                                color: Colors.black54),
+                                            press: () async {
+                                              bool hasItemInCart =
+                                                  await SQLiteDbProvider.db
+                                                      .checkItem(productModel
+                                                          .ecomInventoryId);
+                                              setState(() {
+                                                if (quantity ==
+                                                    productModel.minQty
+                                                        .round()) {
+                                                  if (hasItemInCart) {
+                                                    quantity++;
+                                                    productModel.quantity =
+                                                        quantity;
                                                     SQLiteDbProvider.db.update(
                                                         productModel, 1, 0);
-                                                  if (quantity != 0)
+                                                    _showToast(
+                                                        'Item updated in Cart');
+                                                  } else {
+                                                    productModel.quantity =
+                                                        quantity;
+                                                    SQLiteDbProvider.db.insert(
+                                                        productModel, 1, 0);
                                                     _showToast(
                                                         'Item added to Cart');
-                                                });
-                                              }), /*FloatingActionButton(
+                                                    quantity = productModel
+                                                        .minQty
+                                                        .round();
+                                                  }
+                                                } else {
+                                                  quantity++;
+                                                  productModel.quantity =
+                                                      quantity;
+                                                  SQLiteDbProvider.db.update(
+                                                      productModel, 1, 0);
+                                                  _showToast(
+                                                      'Item updated in Cart');
+                                                }
+                                              });
+                                            },
+                                          ),
+                                          /*FloatingActionButton(
                                             elevation: 0,
                                             backgroundColor: Colors.white,
                                             onPressed: () {
@@ -405,7 +480,8 @@ class _ItemViewVerticalState extends State<ItemViewVertical> {
                                           size: 18,
                                         ),
                                         onPressed: () {
-                                          productModel.quantity = 1.toString();
+                                          productModel.quantity =
+                                              productModel.minQty.round();
                                           SQLiteDbProvider.db
                                               .insert(productModel, 0, 1);
                                           _showToast('Item added to Favorite');
@@ -421,7 +497,8 @@ class _ItemViewVerticalState extends State<ItemViewVertical> {
                                           size: 18,
                                         ),
                                         onPressed: () {
-                                          productModel.quantity = 1.toString();
+                                          productModel.quantity =
+                                              productModel.minQty.round();
                                           SQLiteDbProvider.db
                                               .insert(productModel, 1, 0);
                                           _showToast('Item added to Cart');

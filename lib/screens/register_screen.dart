@@ -19,6 +19,9 @@ var formData = {
   'contactNumber': '',
   'city': '',
   'sReferral': '',
+  'address': '',
+  'area': '',
+  'pincode': '',
 };
 
 class _RegisterScreenState extends State<RegisterScreen> {
@@ -31,7 +34,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           child: SingleChildScrollView(
             child: Padding(
               padding:
-                  const EdgeInsets.symmetric(vertical: 20.0, horizontal: 30),
+                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 15),
               child: Form(
                 key: _formKey,
                 child: Column(
@@ -44,17 +47,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       },
                     ),
                     SizedBox(
-                      height: 20,
+                      height: 10,
                     ),
                     Text(
-                      'SIGN UP',
+                      'Create an Account',
                       style: TextStyle(
                           color: Color(0xFFff5860),
                           fontSize: 35,
                           fontWeight: FontWeight.w900),
                     ),
                     SizedBox(
-                      height: 30,
+                      height: 20,
                     ),
                     Padding(
                       padding: const EdgeInsets.only(bottom: 15.0),
@@ -88,37 +91,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         onSaved: (val) => formData['contactNumber'] = val,
                       ),
                     ),
-                    // Padding(
-                    //   padding: const EdgeInsets.only(bottom: 15.0),
-                    //   child: InputField(
-                    //     hintText: 'Address',
-                    //     validator: emptyValidator('Enter an Address'),
-                    //     onSaved: (val) => formData['address'] = val,
-                    //   ),
-                    // ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 15.0),
-                      child: InputField(
-                        hintText: 'City',
-                        validator: emptyValidator('Enter a City'),
-                        onSaved: (val) => formData['city'] = val,
-                      ),
-                    ),
-                    // Padding(
-                    //   padding: const EdgeInsets.only(bottom: 15.0),
-                    //   child: InputField(
-                    //     hintText: 'Pincode',
-                    //     validator: emptyValidator('Enter a Pincode'),
-                    //     onSaved: (val) => formData['pincode'] = val,
-                    //   ),
-                    // ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 15.0),
-                      child: InputField(
-                        hintText: 'Referred By',
-                        onSaved: (val) => formData['sReferral'] = val,
-                      ),
-                    ),
                     Padding(
                       padding: const EdgeInsets.only(bottom: 15.0),
                       child: PasswordField(
@@ -139,6 +111,45 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         onSaved: (val) => formData['confirmPassword'] = val,
                       ),
                     ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 15.0),
+                      child: InputField(
+                        hintText: 'Referred By',
+                        onSaved: (val) => formData['sReferral'] = val,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 15.0),
+                      child: InputField(
+                        hintText: 'Address',
+                        validator: emptyValidator('Enter an Address'),
+                        onSaved: (val) => formData['address'] = val,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 15.0),
+                      child: InputField(
+                        hintText: 'Area',
+                        validator: emptyValidator('Enter an Area'),
+                        onSaved: (val) => formData['area'] = val,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 15.0),
+                      child: InputField(
+                        hintText: 'City',
+                        validator: emptyValidator('Enter a City'),
+                        onSaved: (val) => formData['city'] = val,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 15.0),
+                      child: InputField(
+                        hintText: 'Pincode',
+                        validator: emptyValidator('Enter a Pincode'),
+                        onSaved: (val) => formData['pincode'] = val,
+                      ),
+                    ),
                     SizedBox(
                       height: 10,
                     ),
@@ -149,7 +160,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         width: double.infinity,
                         child: Center(
                           child: Text(
-                            "Sign up",
+                            "Signup",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 20,
@@ -179,14 +190,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             formData['shopName'],
                             formData['sReferral'],
                             formData['contactNumber'],
-                            formData['city']);
+                            formData['city'],
+                            formData['address'],
+                            formData['area'],
+                            formData['pincode']);
                         if (response != null) {
                           if (response.status) {
                             _showMyDialog(
                               title: 'Registration Successful',
                               body: 'Please Login now',
                             );
-                            Navigator.pop(context);
+                            // Navigator.pop(context);
                           } else if (response.message ==
                               'User Already Exists') {
                             _showMyDialog(
@@ -203,6 +217,31 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         }
                       },
                     ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          'Existing User?',
+                          style: TextStyle(
+                              fontSize: 17, fontWeight: FontWeight.w600),
+                        ),
+                        FlatButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text(
+                            'Log In',
+                            style: TextStyle(
+                                color: Color(0xFFff5860),
+                                fontWeight: FontWeight.w700,
+                                fontSize: 18),
+                          ),
+                        )
+                      ],
+                    )
                   ],
                 ),
               ),
@@ -231,6 +270,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             FlatButton(
               child: Text('OK'),
               onPressed: () {
+                Navigator.pop(context);
                 Navigator.pop(context);
               },
             ),

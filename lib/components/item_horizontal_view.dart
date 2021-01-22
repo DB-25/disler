@@ -1,6 +1,7 @@
 import 'package:disler/database/database.dart';
 import 'package:disler/model/product_model.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 // ignore: must_be_immutable
 class ItemHorizontalView extends StatefulWidget {
@@ -16,11 +17,34 @@ class _ItemHorizontalViewState extends State<ItemHorizontalView> {
   _ItemHorizontalViewState({this.productModel});
   ProductModel productModel;
   int quantity = 0;
+  FToast fToast;
 
   @override
   void initState() {
-    quantity = int.parse(productModel.quantity);
+    fToast = FToast();
+    fToast.init(context);
+    if (productModel != null) quantity = productModel.minQty.round();
     super.initState();
+  }
+
+  _showToast(String msg) {
+    Widget toast = Container(
+      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(25.0),
+        color: Colors.black54,
+      ),
+      child: Text(
+        msg,
+        style: TextStyle(color: Colors.white),
+      ),
+    );
+
+    fToast.showToast(
+      child: toast,
+      gravity: ToastGravity.BOTTOM,
+      toastDuration: Duration(seconds: 2),
+    );
   }
 
   @override
@@ -44,7 +68,7 @@ class _ItemHorizontalViewState extends State<ItemHorizontalView> {
           softWrap: true,
         ),
         subtitle: Text(
-          productModel.size,
+          productModel.weight + "\nQty:" + productModel.sellingQuantity,
           style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
         ),
         trailing: Container(
@@ -56,13 +80,15 @@ class _ItemHorizontalViewState extends State<ItemHorizontalView> {
               children: <Widget>[
                 (quantity == 0)
                     ? Text(
-                        'Rs ' + productModel.price.round().toString(),
+                        'Rs ' + productModel.price.roundToDouble().toString(),
                         style: TextStyle(
                             fontWeight: FontWeight.w700, fontSize: 17),
                       )
                     : Text(
                         'Rs ' +
-                            (productModel.price * quantity).round().toString(),
+                            (productModel.price * quantity)
+                                .roundToDouble()
+                                .toString(),
                         style: TextStyle(
                             fontWeight: FontWeight.w700, fontSize: 17),
                       ),
@@ -78,17 +104,36 @@ class _ItemHorizontalViewState extends State<ItemHorizontalView> {
                         child: FloatingActionButton(
                             elevation: 5,
                             backgroundColor: Colors.white,
-                            onPressed: () {
-                              setState(() {
-                                if (quantity > 0) quantity--;
-                                productModel.quantity = quantity.toString();
-                                if (quantity == 0)
-                                  SQLiteDbProvider.db
-                                      .delete(productModel.productId);
-                                else
-                                  SQLiteDbProvider.db
-                                      .update(productModel, 1, 0);
-                              });
+                            onPressed: () async {
+                              bool hasItemInCart = await SQLiteDbProvider.db
+                                  .checkItem(productModel.ecomInventoryId);
+                              setState(
+                                () {
+                                  //normal deletion
+                                  if (quantity > productModel.minQty.round()) {
+                                    quantity--;
+                                    productModel.quantity = quantity;
+                                    SQLiteDbProvider.db
+                                        .update(productModel, 1, 0);
+                                    _showToast('Item updated in Cart');
+                                  }
+                                  //full deletion
+                                  else if (quantity ==
+                                      productModel.minQty.round()) {
+                                    if (hasItemInCart) {
+                                      SQLiteDbProvider.db
+                                          .delete(productModel.ecomInventoryId);
+                                      _showToast('Item Deleted from Cart');
+                                    } else {
+                                      _showToast('Order min Qty is ' +
+                                          productModel.minQty
+                                              .round()
+                                              .toString());
+                                    }
+                                    quantity = productModel.minQty.round();
+                                  }
+                                },
+                              );
                             },
                             child: Text(
                               '-',
@@ -115,14 +160,30 @@ class _ItemHorizontalViewState extends State<ItemHorizontalView> {
                         child: FloatingActionButton(
                           elevation: 5,
                           backgroundColor: Colors.white,
-                          onPressed: () {
+                          onPressed: () async {
+                            bool hasItemInCart = await SQLiteDbProvider.db
+                                .checkItem(productModel.ecomInventoryId);
                             setState(() {
-                              quantity++;
-                              productModel.quantity = quantity.toString();
-                              if (quantity == 1)
-                                SQLiteDbProvider.db.insert(productModel, 1, 0);
-                              else
+                              if (quantity == productModel.minQty.round()) {
+                                if (hasItemInCart) {
+                                  quantity++;
+                                  productModel.quantity = quantity;
+                                  SQLiteDbProvider.db
+                                      .update(productModel, 1, 0);
+                                  _showToast('Item updated in Cart');
+                                } else {
+                                  productModel.quantity = quantity;
+                                  SQLiteDbProvider.db
+                                      .insert(productModel, 1, 0);
+                                  _showToast('Item added to Cart');
+                                  quantity = productModel.minQty.round();
+                                }
+                              } else {
+                                quantity++;
+                                productModel.quantity = quantity;
                                 SQLiteDbProvider.db.update(productModel, 1, 0);
+                                _showToast('Item updated in Cart');
+                              }
                             });
                           },
                           child: Text(

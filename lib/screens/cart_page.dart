@@ -1,16 +1,12 @@
-import 'dart:convert';
-
 import 'package:disler/database/database.dart';
-import 'package:disler/model/order_detail_model.dart';
 import 'package:disler/model/product_model.dart';
 import 'package:disler/networking/ApiResponse.dart';
 import 'package:disler/networking/api_driver.dart';
 import 'package:disler/screens/login_screen.dart';
 import 'package:disler/screens/order_confirm.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'address_page.dart';
 
 class Cart extends StatefulWidget {
   @override
@@ -28,9 +24,30 @@ class _CartState extends State<Cart> with SingleTickerProviderStateMixin {
   bool enableSuperDiscount = false;
   int delivery = 0;
   int noDelivery = 0;
+  FToast fToast;
 
   void _handleTabSelection() {
     setState(() {});
+  }
+
+  _showToast(String msg) {
+    Widget toast = Container(
+      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(25.0),
+        color: Colors.black54,
+      ),
+      child: Text(
+        msg,
+        style: TextStyle(color: Colors.white),
+      ),
+    );
+
+    fToast.showToast(
+      child: toast,
+      gravity: ToastGravity.BOTTOM,
+      toastDuration: Duration(seconds: 2),
+    );
   }
 
   @override
@@ -39,6 +56,8 @@ class _CartState extends State<Cart> with SingleTickerProviderStateMixin {
     _controller = TabController(length: 2, vsync: this, initialIndex: 0);
 
     _controller.addListener(_handleTabSelection);
+    fToast = FToast();
+    fToast.init(context);
 
     super.initState();
   }
@@ -66,11 +85,11 @@ class _CartState extends State<Cart> with SingleTickerProviderStateMixin {
         itemCount = products.length;
         total = 0;
         for (int i = 0; i < itemCount; i++)
-          total = total +
-              (products[i].retailPrice.toInt() *
-                  int.parse(products[i].quantity));
-        for (int i = 0; i < itemCount; i++)
-          quantity.add(int.parse(products[i].quantity));
+          total = total + (products[i].price.round() * products[i].quantity);
+        for (int i = 0; i < itemCount; i++) {
+          print(products[i].quantity);
+          quantity.add(products[i].quantity);
+        }
       }
       if (products.isEmpty) {
         itemCount = 0;
@@ -792,7 +811,7 @@ class _CartState extends State<Cart> with SingleTickerProviderStateMixin {
                                     softWrap: true,
                                   ),
                                   subtitle: Text(
-                                    products[index].size,
+                                    products[index].weight,
                                     style: TextStyle(
                                         fontWeight: FontWeight.w700,
                                         fontSize: 16),
@@ -809,8 +828,8 @@ class _CartState extends State<Cart> with SingleTickerProviderStateMixin {
                                               ? Text(
                                                   'Rs ' +
                                                       products[index]
-                                                          .retailPrice
-                                                          .round()
+                                                          .price
+                                                          .roundToDouble()
                                                           .toString(),
                                                   style: TextStyle(
                                                       fontWeight:
@@ -819,8 +838,7 @@ class _CartState extends State<Cart> with SingleTickerProviderStateMixin {
                                                 )
                                               : Text(
                                                   'Rs ' +
-                                                      (products[index]
-                                                                  .retailPrice *
+                                                      (products[index].price *
                                                               quantity[index])
                                                           .round()
                                                           .toString(),
@@ -842,28 +860,67 @@ class _CartState extends State<Cart> with SingleTickerProviderStateMixin {
                                                       elevation: 2,
                                                       backgroundColor:
                                                           Colors.white,
-                                                      onPressed: () {
-                                                        setState(() {
-                                                          if (quantity[index] >
-                                                              0)
-                                                            quantity[index]--;
-                                                          products[index]
-                                                                  .quantity =
-                                                              quantity[index]
-                                                                  .toString();
-                                                          if (quantity[index] ==
-                                                              0)
-                                                            SQLiteDbProvider.db
-                                                                .delete(products[
+                                                      onPressed: () async {
+                                                        bool hasItemInCart =
+                                                            await SQLiteDbProvider
+                                                                .db
+                                                                .checkItem(products[
                                                                         index]
-                                                                    .productId);
-                                                          else
-                                                            SQLiteDbProvider.db
-                                                                .update(
+                                                                    .ecomInventoryId);
+                                                        setState(
+                                                          () {
+                                                            //normal deletion
+                                                            if (quantity[
+                                                                    index] >
+                                                                products[index]
+                                                                    .minQty
+                                                                    .round()) {
+                                                              quantity[index]--;
+                                                              products[index]
+                                                                      .quantity =
+                                                                  quantity[
+                                                                      index];
+                                                              SQLiteDbProvider
+                                                                  .db
+                                                                  .update(
+                                                                      products[
+                                                                          index],
+                                                                      1,
+                                                                      0);
+                                                              _showToast(
+                                                                  'Item updated in Cart');
+                                                            }
+                                                            //full deletion
+                                                            else if (quantity[
+                                                                    index] ==
+                                                                products[index]
+                                                                    .minQty
+                                                                    .round()) {
+                                                              if (hasItemInCart) {
+                                                                SQLiteDbProvider
+                                                                    .db
+                                                                    .delete(products[
+                                                                            index]
+                                                                        .ecomInventoryId);
+                                                                _showToast(
+                                                                    'Item Deleted from Cart');
+                                                              } else {
+                                                                _showToast('Order min Qty is ' +
                                                                     products[
-                                                                        index],
-                                                                    1,
-                                                                    0);
+                                                                            index]
+                                                                        .minQty
+                                                                        .round()
+                                                                        .toString());
+                                                              }
+                                                              quantity[index] =
+                                                                  products[
+                                                                          index]
+                                                                      .minQty
+                                                                      .round();
+                                                            }
+                                                          },
+                                                        );
+                                                        setState(() {
                                                           getData();
                                                         });
                                                       },
@@ -896,28 +953,64 @@ class _CartState extends State<Cart> with SingleTickerProviderStateMixin {
                                                     elevation: 2,
                                                     backgroundColor:
                                                         Colors.white,
-                                                    onPressed: () {
+                                                    onPressed: () async {
+                                                      bool hasItemInCart =
+                                                          await SQLiteDbProvider
+                                                              .db
+                                                              .checkItem(products[
+                                                                      index]
+                                                                  .ecomInventoryId);
                                                       setState(() {
-                                                        quantity[index]++;
-                                                        products[index]
-                                                                .quantity =
-                                                            quantity[index]
-                                                                .toString();
                                                         if (quantity[index] ==
-                                                            1)
-                                                          SQLiteDbProvider.db
-                                                              .insert(
-                                                                  products[
-                                                                      index],
-                                                                  1,
-                                                                  0);
-                                                        else
+                                                            products[index]
+                                                                .minQty
+                                                                .round()) {
+                                                          if (hasItemInCart) {
+                                                            quantity[index]++;
+                                                            products[index]
+                                                                    .quantity =
+                                                                quantity[index];
+                                                            SQLiteDbProvider.db
+                                                                .update(
+                                                                    products[
+                                                                        index],
+                                                                    1,
+                                                                    0);
+                                                            _showToast(
+                                                                'Item updated in Cart');
+                                                          } else {
+                                                            products[index]
+                                                                    .quantity =
+                                                                quantity[index];
+                                                            SQLiteDbProvider.db
+                                                                .insert(
+                                                                    products[
+                                                                        index],
+                                                                    1,
+                                                                    0);
+                                                            _showToast(
+                                                                'Item added to Cart');
+                                                            // quantity[index] =
+                                                            //     products[index]
+                                                            //         .minQty
+                                                            //         .round();
+                                                          }
+                                                        } else {
+                                                          quantity[index]++;
+                                                          products[index]
+                                                                  .quantity =
+                                                              quantity[index];
                                                           SQLiteDbProvider.db
                                                               .update(
                                                                   products[
                                                                       index],
                                                                   1,
                                                                   0);
+                                                          _showToast(
+                                                              'Item updated in Cart');
+                                                        }
+                                                      });
+                                                      setState(() {
                                                         getData();
                                                       });
                                                     },
@@ -964,7 +1057,7 @@ class _CartState extends State<Cart> with SingleTickerProviderStateMixin {
                                 ),
                                 Text(
                                   'Rs ' +
-                                      (total /*- (total * discount)*/ .ceil())
+                                      (total /*- (total * discount)*/)
                                           .toString(),
                                   style: TextStyle(
                                       fontSize: 16,
@@ -1012,7 +1105,7 @@ class _CartState extends State<Cart> with SingleTickerProviderStateMixin {
                                 Text(
                                   'Rs ' +
                                       ((total /*- (total * discount)*/
-                                                  .ceil()) +
+                                              ) +
                                               noDelivery)
                                           .toString(),
                                   style: TextStyle(
@@ -1067,32 +1160,45 @@ class _CartState extends State<Cart> with SingleTickerProviderStateMixin {
 
   order() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (prefs.getBool('address_added') == null ||
-        prefs.getBool('address_added') == false) {
+    ApiResponse response = await apiDriver.orderDetails(
+        orderDetailModel: null, productModel: products);
+    if (response.data != null) {
+      print(response.data);
       Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => AddressPage(
-            products: products,
-          ),
-        ),
-      );
-    } else {
-      print(prefs.getString('address_form_data'));
-      var formData = json.decode(prefs.getString('address_form_data'));
-      OrderDetailModel addressDetails = OrderDetailModel.fromMap(formData);
-      ApiResponse response = await apiDriver.orderDetails(
-          orderDetailModel: addressDetails, productModel: products);
-      if (response.data != null) {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => OrderConfirm(
-                      orderNo: response.data[0]['cOrderId'],
-                      products: products,
-                    )));
-      }
+          context,
+          MaterialPageRoute(
+              builder: (context) => OrderConfirm(
+                    orderNo: "ORDER RECEIVED",
+                    products: products,
+                  )));
     }
+    // }
+    // if (prefs.getBool('address_added') == null ||
+    //     prefs.getBool('address_added') == false) {
+    //   Navigator.push(
+    //     context,
+    //     MaterialPageRoute(
+    //       builder: (context) => AddressPage(
+    //         products: products,
+    //       ),
+    //     ),
+    //   );
+    // } else {
+    //   print(prefs.getString('address_form_data'));
+    //   var formData = json.decode(prefs.getString('address_form_data'));
+    //   OrderDetailModel addressDetails = OrderDetailModel.fromMap(formData);
+    //   ApiResponse response = await apiDriver.orderDetails(
+    //       orderDetailModel: addressDetails, productModel: products);
+    //   if (response.data != null) {
+    //     Navigator.push(
+    //         context,
+    //         MaterialPageRoute(
+    //             builder: (context) => OrderConfirm(
+    //                   orderNo: response.data[0]['cOrderId'],
+    //                   products: products,
+    //                 )));
+    //   }
+    // }
   }
 
   void _showDialog() {

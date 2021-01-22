@@ -1,13 +1,16 @@
 class OrderProduct {
-  OrderProduct({this.quantity, this.productId, this.size});
+  OrderProduct(
+      {this.quantity, this.ecomInventoryId, this.weight, this.productId});
 
-  String quantity;
   String productId;
-  String size;
+  String quantity;
+  String ecomInventoryId;
+  String weight;
 
   Map<String, dynamic> toJson() => <String, dynamic>{
-        'productId': productId,
+        'ecomInventoryId': ecomInventoryId,
         'quantity': quantity,
-        'size': size,
+        'size': weight,
+        'productId': productId
       };
 }

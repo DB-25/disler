@@ -26,15 +26,16 @@ class SQLiteDbProvider {
       onOpen: (db) {},
       onCreate: (Database db, int version) async {
         await db.execute("CREATE TABLE Product ("
-            "productId TEXT PRIMARY KEY,"
+            "ecomInventoryId TEXT PRIMARY KEY,"
             "name TEXT,"
+            "productId TEXT,"
             "metaDescription TEXT,"
             "price INTEGER,"
-            "retailPrice INTEGER,"
             "mrp INTEGER,"
             "imageOne TEXT,"
-            "size TEXT,"
-            "quantity TEXT,"
+            "weight TEXT,"
+            "quantity INTEGER,"
+            "minQty INTEGER,"
             "cart INTEGER,"
             "fav INTEGER"
             ")");
@@ -48,7 +49,7 @@ class SQLiteDbProvider {
         await db.query("Product", columns: ProductModel.columns);
     List<ProductModel> products = new List();
     results.forEach((result) {
-      ProductModel product = ProductModel.fromMap(result);
+      ProductModel product = ProductModel.fromMap2(result);
       products.add(product);
     });
     return products;
@@ -58,7 +59,7 @@ class SQLiteDbProvider {
     final db = await database;
 //    var maxIdResult = await db.rawQuery("SELECT MAX(primaryId)+1 as last_inserted_primaryId FROM Product");
 //    var id = maxIdResult.first["last_inserted_primaryId"];
-    if (await checkItem(product.productId)) {
+    if (await checkItem(product.ecomInventoryId)) {
       if (cart == 1) {
         var result = update(product, cart, 1);
         return result;
@@ -68,33 +69,34 @@ class SQLiteDbProvider {
       }
     } else {
       var result = await db.rawInsert(
-          "INSERT Into Product (productId, name, metaDescription, price, retailPrice, mrp, imageOne, cart, fav, quantity, size)"
-          " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+          "INSERT Into Product (ecomInventoryId, name, metaDescription, price, mrp, imageOne, cart, fav, quantity, weight, minQty, productId)"
+          " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
           [
-            product.productId,
+            product.ecomInventoryId,
             product.name,
             product.metaDescription,
             product.price,
-            product.retailPrice,
             product.mrp,
             product.imageOne,
             cart,
             fav,
             product.quantity,
-            product.size
+            product.weight,
+            product.minQty,
+            product.productId
           ]);
-      print(result);
+      // print(product.quantity);
       return result;
     }
   }
 
   Future<bool> checkItem(String id) async {
     final db = await database;
-    var result =
-        await db.rawQuery("SELECT * FROM Product WHERE productId LIKE '%$id%'");
+    var result = await db
+        .rawQuery("SELECT * FROM Product WHERE ecomInventoryId LIKE '%$id%'");
     if (result.isNotEmpty) {
-      ProductModel product = ProductModel.fromMap(result[0]);
-      if (product.productId == id)
+      ProductModel product = ProductModel.fromMap2(result[0]);
+      if (product.ecomInventoryId == id)
         return true;
       else
         return false;
@@ -105,13 +107,13 @@ class SQLiteDbProvider {
   update(ProductModel product, int cart, int fav) async {
     final db = await database;
     var result = await db.update("Product", product.toMap(cart, fav),
-        where: "productId = ?", whereArgs: [product.productId]);
+        where: "ecomInventoryId = ?", whereArgs: [product.ecomInventoryId]);
     return result;
   }
 
   delete(String id) async {
     final db = await database;
-    db.delete("Product", where: "productId = ?", whereArgs: [id]);
+    db.delete("Product", where: "ecomInventoryId = ?", whereArgs: [id]);
   }
 
   Future<List<ProductModel>> getCart() async {
@@ -120,7 +122,9 @@ class SQLiteDbProvider {
         columns: ProductModel.columns, where: '"cart"=?', whereArgs: [1]);
     List<ProductModel> products = new List();
     results.forEach((result) {
-      ProductModel product = ProductModel.fromMap(result);
+      ProductModel product = ProductModel.fromMap2(result);
+      // print(product.minQty);
+      // print(product.quantity);
       products.add(product);
     });
     return products;
@@ -132,7 +136,7 @@ class SQLiteDbProvider {
         columns: ProductModel.columns, where: '"fav"=?', whereArgs: [1]);
     List<ProductModel> products = new List();
     results.forEach((result) {
-      ProductModel product = ProductModel.fromMap(result);
+      ProductModel product = ProductModel.fromMap2(result);
       products.add(product);
     });
     return products;

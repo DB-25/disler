@@ -20,14 +20,14 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
   _ItemBottomSheetState({this.productModel});
 
   ProductModel productModel;
-  int quantity;
+  int quantity = 0;
   FToast fToast;
 
   @override
   void initState() {
     fToast = FToast();
     fToast.init(context);
-    quantity = int.parse(productModel.quantity);
+    quantity = productModel.minQty.round();
     super.initState();
   }
 
@@ -121,13 +121,28 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
                               ),
                             ),
 
-                            Container(
-                              child: Text(
-                                productModel.size,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w700, fontSize: 20),
-                                softWrap: true,
-                              ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Container(
+                                  child: Text(
+                                    productModel.weight,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 20),
+                                    softWrap: true,
+                                  ),
+                                ),
+                                Container(
+                                  child: Text(
+                                    "Qty: " + productModel.sellingQuantity,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 20),
+                                    softWrap: true,
+                                  ),
+                                ),
+                              ],
                             ),
 //                          SizedBox(
 //                            height: 30,
@@ -141,7 +156,7 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
                                 // ),
                                 Padding(
                                   padding: const EdgeInsets.all(0.0),
-                                  child: (quantity == 0)
+                                  child: (quantity <= productModel.minQty)
                                       ? Text(
                                           'Product MRP: ₹ ' +
                                               productModel.mrp
@@ -169,10 +184,10 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.all(0.0),
-                                  child: (quantity == 0)
+                                  child: (quantity <= 0)
                                       ? Text(
                                           'Selling Price: ₹ ' +
-                                              productModel.retailPrice
+                                              productModel.price
                                                   .round()
                                                   .toString(),
                                           style: TextStyle(
@@ -182,8 +197,7 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
                                         )
                                       : Text(
                                           'Selling Price: ₹ ' +
-                                              (productModel.retailPrice *
-                                                      quantity)
+                                              (productModel.price * quantity)
                                                   .round()
                                                   .toString(),
                                           style: TextStyle(
@@ -217,12 +231,42 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
                                   child: FloatingActionButton(
                                       elevation: 0.5,
                                       backgroundColor: Color(0xfff6f6f6),
-                                      onPressed: () {
-                                        setState(() {
-                                          if (quantity > 0) quantity--;
-                                          productModel.quantity =
-                                              quantity.toString();
-                                        });
+                                      onPressed: () async {
+                                        bool hasItemInCart =
+                                            await SQLiteDbProvider.db.checkItem(
+                                                productModel.ecomInventoryId);
+                                        setState(
+                                          () {
+                                            //normal deletion
+                                            if (quantity >
+                                                productModel.minQty.round()) {
+                                              quantity--;
+                                              productModel.quantity = quantity;
+                                              SQLiteDbProvider.db
+                                                  .update(productModel, 1, 0);
+                                              _showToast(
+                                                  'Item updated in Cart');
+                                            }
+                                            //full deletion
+                                            else if (quantity ==
+                                                productModel.minQty.round()) {
+                                              if (hasItemInCart) {
+                                                SQLiteDbProvider.db.delete(
+                                                    productModel
+                                                        .ecomInventoryId);
+                                                _showToast(
+                                                    'Item Deleted from Cart');
+                                              } else {
+                                                _showToast('Order min Qty is ' +
+                                                    productModel.minQty
+                                                        .round()
+                                                        .toString());
+                                              }
+                                              quantity =
+                                                  productModel.minQty.round();
+                                            }
+                                          },
+                                        );
                                       },
                                       child: Text(
                                         '-',
@@ -241,11 +285,34 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
                                   child: FloatingActionButton(
                                     elevation: 0.5,
                                     backgroundColor: Color(0xfff6f6f6),
-                                    onPressed: () {
+                                    onPressed: () async {
+                                      bool hasItemInCart =
+                                          await SQLiteDbProvider.db.checkItem(
+                                              productModel.ecomInventoryId);
                                       setState(() {
-                                        quantity++;
-                                        productModel.quantity =
-                                            quantity.toString();
+                                        if (quantity ==
+                                            productModel.minQty.round()) {
+                                          if (hasItemInCart) {
+                                            quantity++;
+                                            productModel.quantity = quantity;
+                                            SQLiteDbProvider.db
+                                                .update(productModel, 1, 0);
+                                            _showToast('Item updated in Cart');
+                                          } else {
+                                            productModel.quantity = quantity;
+                                            SQLiteDbProvider.db
+                                                .insert(productModel, 1, 0);
+                                            _showToast('Item added to Cart');
+                                            quantity =
+                                                productModel.minQty.round();
+                                          }
+                                        } else {
+                                          quantity++;
+                                          productModel.quantity = quantity;
+                                          SQLiteDbProvider.db
+                                              .update(productModel, 1, 0);
+                                          _showToast('Item updated in Cart');
+                                        }
                                       });
                                     },
                                     child: Text(
@@ -260,39 +327,39 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
                                 ),
                               ],
                             ),
-//                          SizedBox(
-//                            height: 50,
-//                          ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: RaisedButton(
-                                color: Color(0xFFff5860),
-                                child: Container(
-                                  height: 50,
-                                  width: double.infinity,
-                                  child: Center(
-                                    child: Text(
-                                      "Add to cart",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 20,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                onPressed: () {
-                                  if (quantity != 0)
-                                    SQLiteDbProvider.db
-                                        .insert(productModel, 1, 0);
-                                  if (quantity != 0)
-                                    _showToast('Item added to Cart');
-                                  Navigator.pop(context);
-                                },
-                              ),
+                            SizedBox(
+                              height: 30,
                             ),
+//                             Padding(
+//                               padding: const EdgeInsets.all(8.0),
+//                               child: RaisedButton(
+//                                 color: Color(0xFFff5860),
+//                                 child: Container(
+//                                   height: 50,
+//                                   width: double.infinity,
+//                                   child: Center(
+//                                     child: Text(
+//                                       "Add to cart",
+//                                       style: TextStyle(
+//                                         color: Colors.white,
+//                                         fontSize: 20,
+//                                       ),
+//                                     ),
+//                                   ),
+//                                 ),
+//                                 shape: RoundedRectangleBorder(
+//                                   borderRadius: BorderRadius.circular(10),
+//                                 ),
+//                                 onPressed: () {
+//                                   if (quantity != 0)
+//                                     SQLiteDbProvider.db
+//                                         .insert(productModel, 1, 0);
+//                                   if (quantity != 0)
+//                                     _showToast('Item added to Cart');
+//                                   Navigator.pop(context);
+//                                 },
+//                               ),
+//                             ),
                           ],
                         ),
                       ),

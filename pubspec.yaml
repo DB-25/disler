@@ -4,7 +4,7 @@ description: A new Flutter project.
 version: 0.0.0+0
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.2.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -19,6 +19,7 @@ dependencies:
   google_sign_in: ^4.5.1
   shared_preferences: ^0.5.8
   cached_network_image: ^2.5.0
+  google_fonts: ^1.1.1
 
 
 dev_dependencies:
