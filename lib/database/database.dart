@@ -17,9 +17,10 @@ class SQLiteDbProvider {
     return _database;
   }
 
+  String path;
   initDB() async {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
-    String path = join(documentsDirectory.path, "ProductDB.db");
+    path = join(documentsDirectory.path, "ProductDB.db");
     return await openDatabase(
       path,
       version: 1,
@@ -114,6 +115,11 @@ class SQLiteDbProvider {
   delete(String id) async {
     final db = await database;
     db.delete("Product", where: "ecomInventoryId = ?", whereArgs: [id]);
+  }
+
+  dropDB() async {
+    await deleteDatabase(path);
+    await _database.close();
   }
 
   Future<List<ProductModel>> getCart() async {

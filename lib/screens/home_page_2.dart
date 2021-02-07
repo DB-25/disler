@@ -4,11 +4,13 @@ import 'dart:io';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:disler/components/horizontal_category.dart';
 import 'package:disler/components/icon_btn.dart';
+import 'package:disler/components/password_field.dart';
 import 'package:disler/components/search_field.dart';
 import 'package:disler/model/banner_model.dart';
 import 'package:disler/model/brand_model.dart';
 import 'package:disler/model/category_model.dart';
 import 'package:disler/model/product_model.dart';
+import 'package:disler/networking/ApiResponse.dart';
 import 'package:disler/networking/api_driver.dart';
 import 'package:disler/screens/address_page.dart';
 import 'package:disler/screens/login_screen.dart';
@@ -139,6 +141,8 @@ class _HomePage2State extends State<HomePage2>
   File _image;
   final picker = ImagePicker();
 
+  final _formKey = GlobalKey<FormState>();
+
   Future getImage() async {
     final pickedFile = await picker.getImage(source: ImageSource.camera);
     setState(() {
@@ -148,6 +152,11 @@ class _HomePage2State extends State<HomePage2>
 
   bool loading = true;
   TabController _controller;
+
+  var formData = {
+    'confirmPassword': '',
+    'password': '',
+  };
 
   Color getColor(int num) {
     num = num % 5;
@@ -224,6 +233,107 @@ class _HomePage2State extends State<HomePage2>
           ),
         ),
       ),
+    );
+  }
+
+  Future<void> _showMyDialog({String title, String body}) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(body),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.pop(context);
+                // Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _showMyDialog2({String title, String body}) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: SingleChildScrollView(
+            child: Form(
+              key: _formKey,
+              child: ListBody(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: PasswordField(
+                      hintText: "New Password",
+                      icon: Icons.lock,
+                      validator:
+                          passwordValidator("Password must not be empty"),
+                      onSaved: (val) => formData['password'] = val,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: PasswordField(
+                      hintText: "Confirm Password",
+                      icon: Icons.lock,
+                      validator:
+                          passwordValidator("Password must not be empty"),
+                      onSaved: (val) => formData['confirmPassword'] = val,
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('UPDATE'),
+              onPressed: () async {
+                _formKey.currentState.save();
+                if (!_formKey.currentState.validate()) return;
+                if (formData['password'] != formData['confirmPassword']) {
+                  _showMyDialog(
+                    title: 'Check Password',
+                    body: 'Please check your password.',
+                  );
+                  return;
+                }
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                String email = prefs.getString('email');
+                ApiResponse updatePassword =
+                    await apiDriver.updatePassword(email, formData['password']);
+                Navigator.of(context).pop();
+                print(updatePassword.message);
+                if (updatePassword != null)
+                  _showMyDialog(
+                      title: updatePassword.message,
+                      body: updatePassword.message);
+              },
+            ),
+            FlatButton(
+              child: Text('CANCEL'),
+              onPressed: () async {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -426,7 +536,7 @@ class _HomePage2State extends State<HomePage2>
               ),
               ListTile(
                 title: Text(
-                  'Order',
+                  'Orders',
                   style: TextStyle(
                       fontSize: 18,
                       color: Colors.black54,
@@ -435,6 +545,18 @@ class _HomePage2State extends State<HomePage2>
                 onTap: () {
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => ManualOrder()));
+                },
+              ),
+              ListTile(
+                title: Text(
+                  'Update Password',
+                  style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.black54,
+                      fontWeight: FontWeight.w700),
+                ),
+                onTap: () {
+                  _showMyDialog2(title: 'Update Password', body: '');
                 },
               ),
               ValueListenableBuilder<bool>(
@@ -462,6 +584,8 @@ class _HomePage2State extends State<HomePage2>
                               admin.value = false;
                               // ignore: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
                               admin.notifyListeners();
+                              //
+                              // await SQLiteDbProvider.db.dropDB();
                               setState(() {});
                               SystemChannels.platform
                                   .invokeMethod('SystemNavigator.pop');
@@ -524,27 +648,71 @@ class _HomePage2State extends State<HomePage2>
                                   child: CircularProgressIndicator(),
                                 ),
                               )
-                            : Carousel(
-                                images: [
-                                  NetworkImage(ApiDriver().getBaseUrl() +
-                                      '/wp/home/ff80818171b2ad0501720ab097fd0006/bannerOne/banner-one.png'),
-                                  NetworkImage(ApiDriver().getBaseUrl() +
-                                      '/wp/home/ff80818171b2ad0501720ab097fd0006/bannerTwo/banner-2.jpg'),
-                                  NetworkImage(ApiDriver().getBaseUrl() +
-                                      '/wp/home/ff80818171b2ad0501720ab097fd0006/bannerThree/banner-3.png')
-                                ],
-                                boxFit: BoxFit.fill,
-                                showIndicator: true,
-                                dotIncreaseSize: 1.3,
-                                dotBgColor: Colors.black.withOpacity(0),
-                                dotColor: Colors.white70,
-                                borderRadius: false,
-                                moveIndicatorFromBottom: 180.0,
-                                noRadiusForIndicator: true,
-                                overlayShadow: false,
-                                overlayShadowColors: Colors.white,
-                                overlayShadowSize: 0.7,
-                              ),
+                            : (bannerModel != null)
+                                ? Carousel(
+                                    images: [
+                                      NetworkImage(ApiDriver().getBaseUrl() +
+                                          '/wp' +
+                                          bannerModel.bannerOne),
+                                      NetworkImage(ApiDriver().getBaseUrl() +
+                                          '/wp' +
+                                          bannerModel.bannerTwo),
+                                      NetworkImage(ApiDriver().getBaseUrl() +
+                                          '/wp' +
+                                          bannerModel.bannerThree)
+                                    ],
+                                    boxFit: BoxFit.fill,
+                                    showIndicator: true,
+                                    dotIncreaseSize: 1.3,
+                                    dotBgColor: Colors.black.withOpacity(0),
+                                    dotColor: Colors.white70,
+                                    borderRadius: false,
+                                    moveIndicatorFromBottom: 180.0,
+                                    noRadiusForIndicator: true,
+                                    overlayShadow: false,
+                                    overlayShadowColors: Colors.white,
+                                    overlayShadowSize: 0.7,
+                                  )
+                                : Carousel(
+                                    images: [
+                                      AssetImage('assets/no_image.png'),
+                                      AssetImage('assets/no_image.png'),
+                                      AssetImage('assets/no_image.png'),
+                                    ],
+                                    boxFit: BoxFit.fill,
+                                    showIndicator: true,
+                                    dotIncreaseSize: 1.3,
+                                    dotBgColor: Colors.black.withOpacity(0),
+                                    dotColor: Colors.white70,
+                                    borderRadius: false,
+                                    moveIndicatorFromBottom: 180.0,
+                                    noRadiusForIndicator: true,
+                                    overlayShadow: false,
+                                    overlayShadowColors: Colors.white,
+                                    overlayShadowSize: 0.7,
+                                  )
+                        // Carousel(
+                        //             images: [
+                        //               NetworkImage(ApiDriver().getBaseUrl() +
+                        //                   '/wp/home/ff80818171b2ad0501720ab097fd0006/bannerOne/banner-one.png'),
+                        //               NetworkImage(ApiDriver().getBaseUrl() +
+                        //                   '/wp/home/ff80818171b2ad0501720ab097fd0006/bannerTwo/banner-2.jpg'),
+                        //               NetworkImage(ApiDriver().getBaseUrl() +
+                        //                   '/wp/home/ff80818171b2ad0501720ab097fd0006/bannerThree/banner-3.png')
+                        //             ],
+                        //             boxFit: BoxFit.fill,
+                        //             showIndicator: true,
+                        //             dotIncreaseSize: 1.3,
+                        //             dotBgColor: Colors.black.withOpacity(0),
+                        //             dotColor: Colors.white70,
+                        //             borderRadius: false,
+                        //             moveIndicatorFromBottom: 180.0,
+                        //             noRadiusForIndicator: true,
+                        //             overlayShadow: false,
+                        //             overlayShadowColors: Colors.white,
+                        //             overlayShadowSize: 0.7,
+                        //           )
+                        ,
                       ),
                     ),
                   ),

@@ -101,6 +101,7 @@ class _VerticalViewPage2State extends State<VerticalViewPage2> {
         isLoading = true;
       });
       index += 10;
+      print(index);
       if (tempList != null) tempList.clear();
       if (url != null) {
         ApiResponse response = await apiDriver.getCategoryData(

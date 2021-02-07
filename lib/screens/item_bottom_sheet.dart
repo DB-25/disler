@@ -156,55 +156,58 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
                                 // ),
                                 Padding(
                                   padding: const EdgeInsets.all(0.0),
-                                  child: (quantity <= productModel.minQty)
-                                      ? Text(
-                                          'Product MRP: ₹ ' +
-                                              productModel.mrp
-                                                  .round()
-                                                  .toString(),
-                                          style: TextStyle(
-                                              color: Colors.grey[600],
-                                              decoration:
-                                                  TextDecoration.lineThrough,
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 16),
-                                        )
-                                      : Text(
-                                          'Product MRP: ₹ ' +
-                                              (productModel.mrp * quantity)
-                                                  .round()
-                                                  .toString(),
-                                          style: TextStyle(
-                                              color: Colors.grey[600],
-                                              decoration:
-                                                  TextDecoration.lineThrough,
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 18),
-                                        ),
+                                  child:
+                                      // (quantity <= 0)
+                                      //     ?
+                                      Text(
+                                    'Price: ₹ ' +
+                                        productModel.price
+                                            .roundToDouble()
+                                            .toString(),
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w700,
+                                        color: Color(0xFFff5860),
+                                        fontSize: 20),
+                                  ),
+                                  // : Text(
+                                  //     'Selling Price: ₹ ' +
+                                  //         (productModel.price * quantity)
+                                  //             .round()
+                                  //             .toString(),
+                                  //     style: TextStyle(
+                                  //         fontWeight: FontWeight.w700,
+                                  //         color: Color(0xFFff5860),
+                                  //         fontSize: 21),
+                                  //   ),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.all(0.0),
-                                  child: (quantity <= 0)
-                                      ? Text(
-                                          'Selling Price: ₹ ' +
-                                              productModel.price
-                                                  .round()
-                                                  .toString(),
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.w700,
-                                              color: Color(0xFFff5860),
-                                              fontSize: 20),
-                                        )
-                                      : Text(
-                                          'Selling Price: ₹ ' +
-                                              (productModel.price * quantity)
-                                                  .round()
-                                                  .toString(),
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.w700,
-                                              color: Color(0xFFff5860),
-                                              fontSize: 21),
-                                        ),
+                                  child:
+                                      // (quantity <= productModel.minQty)
+                                      //     ?
+                                      Text(
+                                    'MRP: ₹ ' +
+                                        productModel.mrp
+                                            .roundToDouble()
+                                            .toString(),
+                                    style: TextStyle(
+                                        color: Colors.grey[600],
+                                        // decoration: TextDecoration.lineThrough,
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 16),
+                                  ),
+                                  // : Text(
+                                  //     'Product MRP: ₹ ' +
+                                  //         (productModel.mrp * quantity)
+                                  //             .round()
+                                  //             .toString(),
+                                  //     style: TextStyle(
+                                  //         color: Colors.grey[600],
+                                  //         decoration:
+                                  //             TextDecoration.lineThrough,
+                                  //         fontWeight: FontWeight.w500,
+                                  //         fontSize: 18),
+                                  //   ),
                                 ),
                               ],
                             ),

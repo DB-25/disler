@@ -44,7 +44,7 @@ class _ItemViewVerticalState extends State<ItemViewVertical> {
     fToast.showToast(
       child: toast,
       gravity: ToastGravity.BOTTOM,
-      toastDuration: Duration(seconds: 2),
+      toastDuration: Duration(seconds: 1),
     );
   }
 
@@ -232,49 +232,51 @@ class _ItemViewVerticalState extends State<ItemViewVertical> {
                           children: <Widget>[
                             Padding(
                               padding: const EdgeInsets.all(0.0),
-                              child: (quantity == 0)
-                                  ? Text(
-                                      '₹ ' +
-                                          productModel.price.round().toString(),
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w700,
-                                          fontSize: 17),
-                                    )
-                                  : Text(
-                                      '₹ ' +
-                                          (productModel.price * quantity)
-                                              .round()
-                                              .toString(),
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w700,
-                                          fontSize: 17),
-                                    ),
+                              child:
+                                  // (quantity == 0)
+                                  //     ?
+                                  Text(
+                                '₹ ' + productModel.price.round().toString(),
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w700, fontSize: 17),
+                              ),
+                              // : Text(
+                              //     '₹ ' +
+                              //         (productModel.price * quantity)
+                              //             .round()
+                              //             .toString(),
+                              //     style: TextStyle(
+                              //         fontWeight: FontWeight.w700,
+                              //         fontSize: 17),
+                              //   )
+                              //   ,
                             ),
                             Padding(
                               padding: const EdgeInsets.all(0.0),
-                              child: (quantity == 0)
-                                  ? Text(
-                                      '₹ ' +
-                                          productModel.mrp.round().toString(),
-                                      style: TextStyle(
-                                          color: Colors.grey[600],
-                                          // decoration:
-                                          //     TextDecoration.lineThrough,
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 14),
-                                    )
-                                  : Text(
-                                      '₹ ' +
-                                          (productModel.mrp * quantity)
-                                              .round()
-                                              .toString(),
-                                      style: TextStyle(
-                                          color: Colors.grey[600],
-                                          // decoration:
-                                          //     TextDecoration.lineThrough,
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 14),
-                                    ),
+                              child:
+                                  // (quantity == 0)
+                                  //     ?
+                                  Text(
+                                '₹ ' + productModel.mrp.round().toString(),
+                                style: TextStyle(
+                                    color: Colors.grey[600],
+                                    // decoration:
+                                    //     TextDecoration.lineThrough,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 14),
+                              ),
+                              // : Text(
+                              //     '₹ ' +
+                              //         (productModel.mrp * quantity)
+                              //             .round()
+                              //             .toString(),
+                              //     style: TextStyle(
+                              //         color: Colors.grey[600],
+                              //         // decoration:
+                              //         //     TextDecoration.lineThrough,
+                              //         fontWeight: FontWeight.w500,
+                              //         fontSize: 14),
+                              //   ),
                             ),
                           ],
                         ),

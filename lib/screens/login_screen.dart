@@ -1,6 +1,7 @@
 import 'package:disler/components/input_field.dart';
 import 'package:disler/components/password_field.dart';
 import 'package:disler/model/login_model.dart';
+import 'package:disler/networking/ApiResponse.dart';
 import 'package:disler/networking/api_driver.dart';
 import 'package:disler/screens/home_screen.dart';
 import 'package:disler/screens/register_screen.dart';
@@ -17,10 +18,14 @@ class LoginScreen extends StatefulWidget {
 }
 
 final _formKey = GlobalKey<FormState>();
+final _formKey2 = GlobalKey<FormState>();
 final scaffoldKey = GlobalKey<ScaffoldState>();
 var formData = {
   'email': '',
   'password': '',
+};
+var formData2 = {
+  'email': '',
 };
 
 ApiDriver apiDriver = ApiDriver();
@@ -58,6 +63,58 @@ class _LoginScreenState extends State<LoginScreen> {
   //     Navigator.pushReplacement(
   //         context, MaterialPageRoute(builder: (context) => HomeScreen()));
   // }
+
+  Future<void> _showMyDialog2({String title}) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: SingleChildScrollView(
+            child: Form(
+              key: _formKey2,
+              child: ListBody(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: InputField(
+                      hintText: "Enter your Email",
+                      validator: emptyValidator('Enter your Email'),
+                      onSaved: (val) => formData2['email'] = val,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('RESET'),
+              onPressed: () async {
+                _formKey2.currentState.save();
+                if (!_formKey2.currentState.validate()) return;
+                Navigator.of(context).pop();
+                ApiResponse forgotPassword =
+                    await apiDriver.forgotPassword(formData2['email']);
+                print(forgotPassword.message);
+                if (forgotPassword != null)
+                  _showMyDialog(
+                      title: forgotPassword.message,
+                      body: forgotPassword.message);
+              },
+            ),
+            FlatButton(
+              child: Text('CANCEL'),
+              onPressed: () async {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -168,6 +225,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 'password', loginModel.password);
                             await prefs.setString(
                                 'userType', response.data[0]['userType']);
+                            print(response.data[0]['userType']);
                             if (response.data[0]['userType'] == 'ROLE_ADMIN') {
                               prefs.setBool('admin', true);
                               setState(() {
@@ -198,7 +256,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               });
                               _showMyDialog(
                                   title: 'Login Successful',
-                                  body: 'USER LOGIN.');
+                                  body: response.message);
                               Navigator.pop(context);
                               Navigator.pushReplacement(
                                   context,
@@ -209,9 +267,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           }
                         } else {
                           _showMyDialog(
-                              title: 'Login Failed',
-                              body:
-                                  'Please check your Email / Phone No and password.');
+                              title: 'Login Failed', body: response.message);
                         }
                       },
                     ),
@@ -254,31 +310,49 @@ class _LoginScreenState extends State<LoginScreen> {
                           )
                         : Container(),
                     SizedBox(
-                      height: MediaQuery.of(context).size.height - 600,
+                      height: MediaQuery.of(context).size.height - 650,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text(
-                          'Don\'t have an account?',
-                          style: TextStyle(
-                              fontSize: 17, fontWeight: FontWeight.w600),
-                        ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
                         FlatButton(
                           onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => RegisterScreen()));
+                            _showMyDialog2(title: 'Forgot Password');
                           },
                           child: Text(
-                            'Sign Up',
+                            'Forgot your Password?',
                             style: TextStyle(
                                 color: Color(0xFFff5860),
                                 fontWeight: FontWeight.w700,
                                 fontSize: 18),
                           ),
-                        )
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                              'Don\'t have an account?',
+                              style: TextStyle(
+                                  fontSize: 17, fontWeight: FontWeight.w600),
+                            ),
+                            FlatButton(
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            RegisterScreen()));
+                              },
+                              child: Text(
+                                'Sign Up',
+                                style: TextStyle(
+                                    color: Color(0xFFff5860),
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 18),
+                              ),
+                            )
+                          ],
+                        ),
                       ],
                     )
                   ],

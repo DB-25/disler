@@ -43,7 +43,7 @@ class _ItemHorizontalViewState extends State<ItemHorizontalView> {
     fToast.showToast(
       child: toast,
       gravity: ToastGravity.BOTTOM,
-      toastDuration: Duration(seconds: 2),
+      toastDuration: Duration(seconds: 1),
     );
   }
 
@@ -78,20 +78,21 @@ class _ItemHorizontalViewState extends State<ItemHorizontalView> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                (quantity == 0)
-                    ? Text(
-                        'Rs ' + productModel.price.roundToDouble().toString(),
-                        style: TextStyle(
-                            fontWeight: FontWeight.w700, fontSize: 17),
-                      )
-                    : Text(
-                        'Rs ' +
-                            (productModel.price * quantity)
-                                .roundToDouble()
-                                .toString(),
-                        style: TextStyle(
-                            fontWeight: FontWeight.w700, fontSize: 17),
-                      ),
+                // (quantity == 0)
+                //     ?
+                Text(
+                  'Rs ' + productModel.price.roundToDouble().toString(),
+                  style: TextStyle(fontWeight: FontWeight.w700, fontSize: 17),
+                ),
+                // :
+                // Text(
+                //         'Rs ' +
+                //             (productModel.price * quantity)
+                //                 .roundToDouble()
+                //                 .toString(),
+                //         style: TextStyle(
+                //             fontWeight: FontWeight.w700, fontSize: 17),
+                //       ),
                 SizedBox(
                   height: 5,
                 ),

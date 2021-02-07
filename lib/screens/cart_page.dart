@@ -46,7 +46,7 @@ class _CartState extends State<Cart> with SingleTickerProviderStateMixin {
     fToast.showToast(
       child: toast,
       gravity: ToastGravity.BOTTOM,
-      toastDuration: Duration(seconds: 2),
+      toastDuration: Duration(seconds: 1),
     );
   }
 
@@ -824,29 +824,29 @@ class _CartState extends State<Cart> with SingleTickerProviderStateMixin {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: <Widget>[
-                                          (quantity[index] == 0)
-                                              ? Text(
-                                                  'Rs ' +
-                                                      products[index]
-                                                          .price
-                                                          .roundToDouble()
-                                                          .toString(),
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w700,
-                                                      fontSize: 16),
-                                                )
-                                              : Text(
-                                                  'Rs ' +
-                                                      (products[index].price *
-                                                              quantity[index])
-                                                          .round()
-                                                          .toString(),
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w700,
-                                                      fontSize: 16),
-                                                ),
+                                          // (quantity[index] == 0)
+                                          //     ?
+                                          Text(
+                                            'Rs ' +
+                                                products[index]
+                                                    .price
+                                                    .roundToDouble()
+                                                    .toString(),
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w700,
+                                                fontSize: 16),
+                                          ),
+                                          // : Text(
+                                          //     'Rs ' +
+                                          //         (products[index].price *
+                                          //                 quantity[index])
+                                          //             .round()
+                                          //             .toString(),
+                                          //     style: TextStyle(
+                                          //         fontWeight:
+                                          //             FontWeight.w700,
+                                          //         fontSize: 16),
+                                          //   ),
                                           SizedBox(
                                             height: 5,
                                           ),
@@ -1140,7 +1140,7 @@ class _CartState extends State<Cart> with SingleTickerProviderStateMixin {
                           borderRadius: BorderRadius.circular(10),
                         ),
                         onPressed: () async {
-                          if (total >= 0) {
+                          if (total > 0) {
                             order();
                           } else
                             _showDialog();
@@ -1209,7 +1209,7 @@ class _CartState extends State<Cart> with SingleTickerProviderStateMixin {
         // return object of type Dialog
         return AlertDialog(
           title: new Text("Cart Value Low"),
-          content: new Text("Order min of Rs.2000"),
+          content: new Text("Please Add Items to cart"),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
             new FlatButton(

@@ -10,8 +10,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'ApiResponse.dart';
 
 class ApiDriver {
-  final String environment = "test";
-  // final String companyId = 'ff80818171b2ad0501720ab097fd0006';
+  final String environment = "live";
+  final String oldCompanyId = 'ff80818171b2ad0501720ab097fd0006';
   final String companyId = '402880ea77243ec40177244020840000';
 
   getBaseUrl() {
@@ -48,6 +48,32 @@ class ApiDriver {
     }
   }
 
+  Future<ApiResponse<dynamic>> changeToDelivered(String orderId) async {
+    final http.Response response = await http.post(
+        getBaseUrl() + '/login', //TODO:change it
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, String>{
+          'companyId': companyId,
+          'orderId': orderId,
+          'status': 'Delivered'
+        }));
+    print(response.statusCode);
+    print(response.body);
+    if (response.statusCode != 200) {
+      return null;
+    } else {
+      Map<String, dynamic> responseMap = jsonDecode(response.body);
+      if (!responseMap["status"]) {
+        print(responseMap["status"]);
+        throw Exception('Failed to load data models');
+      } else {
+        return ApiResponse.fromMap(responseMap);
+      }
+    }
+  }
+
   Future<ApiResponse<dynamic>> login(String email, String password) async {
     final http.Response response = await http.post(getAuthUrl() + '/login',
         headers: <String, String>{
@@ -61,6 +87,62 @@ class ApiDriver {
     print(response.statusCode);
     print(response.body);
     if (response.statusCode != 200) {
+      return null;
+    } else {
+      Map<String, dynamic> responseMap = jsonDecode(response.body);
+      if (!responseMap["status"]) {
+        print(responseMap["status"]);
+        throw Exception('Failed to load data models');
+      } else {
+        return ApiResponse.fromMap(responseMap);
+      }
+    }
+  }
+
+  Future<ApiResponse<dynamic>> forgotPassword(String email) async {
+    final http.Response response = await http.post(
+        getAuthUrl() + '/forgot-password',
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(
+            <String, String>{'companyId': companyId, 'email': email}));
+    print(response.statusCode);
+    print(response.body);
+    if (response.statusCode == 404) {
+      Map<String, dynamic> responseMap = jsonDecode(response.body);
+      return ApiResponse.fromMap(responseMap);
+    } else if (response.statusCode != 200) {
+      return null;
+    } else {
+      Map<String, dynamic> responseMap = jsonDecode(response.body);
+      if (!responseMap["status"]) {
+        print(responseMap["status"]);
+        throw Exception('Failed to load data models');
+      } else {
+        return ApiResponse.fromMap(responseMap);
+      }
+    }
+  }
+
+  Future<ApiResponse<dynamic>> updatePassword(
+      String email, String password) async {
+    final http.Response response = await http.post(
+        getAuthUrl() + '/update-password',
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, String>{
+          'companyId': companyId,
+          'email': email,
+          'password': password
+        }));
+    print(response.statusCode);
+    print(response.body);
+    if (response.statusCode == 404) {
+      Map<String, dynamic> responseMap = jsonDecode(response.body);
+      return ApiResponse.fromMap(responseMap);
+    } else if (response.statusCode != 200) {
       return null;
     } else {
       Map<String, dynamic> responseMap = jsonDecode(response.body);
