@@ -256,7 +256,9 @@ class _LoginScreenState extends State<LoginScreen> {
                               });
                               _showMyDialog(
                                   title: 'Login Successful',
-                                  body: response.message);
+                                  body: response != null
+                                      ? response.message
+                                      : "Enjoy Shopping.");
                               Navigator.pop(context);
                               Navigator.pushReplacement(
                                   context,
@@ -267,7 +269,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           }
                         } else {
                           _showMyDialog(
-                              title: 'Login Failed', body: response.message);
+                              title: 'Login Failed',
+                              body: response != null
+                                  ? response.message
+                                  : "User Credentials Wrong!");
                         }
                       },
                     ),

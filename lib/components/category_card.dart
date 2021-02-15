@@ -39,7 +39,8 @@ class CategoryCard extends StatelessWidget {
     if (name == 'Personal Care') return 'product-by-category';
     if (name == 'Snacks & All') return 'product-by-category';
     if (name == 'Household Items') return 'product-by-category';
-    if (name == 'Beverages')
+    if (name == 'Beverages') return 'product-by-category';
+    if (name == 'Confectionery')
       return 'product-by-category';
     else {
       flag = true;
