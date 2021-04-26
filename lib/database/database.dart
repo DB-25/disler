@@ -117,6 +117,22 @@ class SQLiteDbProvider {
     db.delete("Product", where: "ecomInventoryId = ?", whereArgs: [id]);
   }
 
+  clearTable() async {
+    final db = await database;
+    db.delete("Product");
+  }
+
+  Future<int> checkQuantity(String id) async {
+    final db = await database;
+    var result =
+        await db.rawQuery("SELECT * FROM Product WHERE productId LIKE '%$id%'");
+    if (result.isNotEmpty) {
+      ProductModel product = ProductModel.fromMap2(result[0]);
+      return product.quantity;
+    } else
+      return 0;
+  }
+
   dropDB() async {
     await deleteDatabase(path);
     await _database.close();

@@ -30,6 +30,12 @@ class _CartState extends State<Cart> with SingleTickerProviderStateMixin {
     setState(() {});
   }
 
+  void refresh() {
+    setState(() {
+      getData();
+    });
+  }
+
   _showToast(String msg) {
     Widget toast = Container(
       padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
@@ -1163,14 +1169,17 @@ class _CartState extends State<Cart> with SingleTickerProviderStateMixin {
     ApiResponse response = await apiDriver.orderDetails(
         orderDetailModel: null, productModel: products);
     if (response.data != null) {
-      print(response.data);
-      Navigator.push(
+      SQLiteDbProvider.db.clearTable();
+      String received = await Navigator.push(
           context,
           MaterialPageRoute(
               builder: (context) => OrderConfirm(
                     orderNo: "ORDER RECEIVED",
                     products: products,
                   )));
+      if (received == "refresh") {
+        refresh();
+      }
     }
     // }
     // if (prefs.getBool('address_added') == null ||

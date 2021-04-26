@@ -116,15 +116,15 @@ class _HomePage2State extends State<HomePage2>
 
   void refresh() {
     Future.delayed(new Duration(seconds: 1), () {
-      setState(() {
-        loading = false;
-      });
+      setState(() {});
     });
     Future.delayed(new Duration(seconds: 2), () {
       setState(() {});
     });
     Future.delayed(new Duration(seconds: 3), () {
-      setState(() {});
+      setState(() {
+        loading = false;
+      });
     });
     Future.delayed(new Duration(seconds: 5), () {
       setState(() {});
@@ -200,38 +200,114 @@ class _HomePage2State extends State<HomePage2>
                 ),
               );
             },
-            child: Stack(children: [
-              Padding(
-                padding: const EdgeInsets.all(5.0),
-                child: Container(
-                  width: itemWidth,
-                  height: itemHeight,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5),
-                      color: getColor(index)),
-                ),
-              ),
-              Container(
-                width: itemWidth - 10,
-                height: itemHeight - 8,
-                child: Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: Center(
-                    child: Text(
-                      data[index].name,
-                      maxLines: 2,
-                      softWrap: true,
-                      style: TextStyle(
-                          fontSize: 18,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w900),
+            child: loading
+                ? Stack(children: [
+                    Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: Container(
+                        width: itemWidth,
+                        height: itemHeight,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            color: Colors.grey),
+                      ),
                     ),
-                  ),
-                ),
-              ),
-            ]),
+                    Container(
+                      width: itemWidth - 10,
+                      height: itemHeight - 8,
+                      child: Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Center(
+                          child: Text(
+                            "Loading..",
+                            maxLines: 2,
+                            softWrap: true,
+                            style: TextStyle(
+                                fontSize: 18,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w900),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ])
+                : Stack(children: [
+                    Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: Container(
+                        width: itemWidth,
+                        height: itemHeight,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            color: getColor(index)),
+                      ),
+                    ),
+                    Container(
+                      width: itemWidth - 10,
+                      height: itemHeight - 8,
+                      child: Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Center(
+                          child: Text(
+                            data[index].name,
+                            maxLines: 2,
+                            softWrap: true,
+                            style: TextStyle(
+                                fontSize: 18,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w900),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ]),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget displayEmpty(int quantity, double itemWidth, double itemHeight) {
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: GridView.count(
+        // primary: true,
+        physics: new NeverScrollableScrollPhysics(),
+        childAspectRatio: (itemWidth.round() / itemHeight.round()),
+        crossAxisCount: 2,
+        shrinkWrap: true,
+        children: List.generate(
+            quantity,
+            (index) => Stack(children: [
+                  Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: Container(
+                      width: itemWidth,
+                      height: itemHeight,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          color: Colors.grey[200]),
+                    ),
+                  ),
+                  Container(
+                    width: itemWidth - 10,
+                    height: itemHeight - 8,
+                    child: Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: Center(
+                        child: Text(
+                          "Loading..",
+                          maxLines: 2,
+                          softWrap: true,
+                          style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w900),
+                        ),
+                      ),
+                    ),
+                  ),
+                ])),
       ),
     );
   }
@@ -750,7 +826,9 @@ class _HomePage2State extends State<HomePage2>
                       children: [
                         Container(
                           child: brand != null
-                              ? displayBrand(brand, itemWidth, itemHeight)
+                              ? loading
+                                  ? displayEmpty(6, itemWidth, itemHeight)
+                                  : displayBrand(brand, itemWidth, itemHeight)
                               : Padding(
                                   padding: const EdgeInsets.all(20.0),
                                   child: Text(
@@ -761,7 +839,10 @@ class _HomePage2State extends State<HomePage2>
                         ),
                         Container(
                           child: distributor != null
-                              ? displayBrand(distributor, itemWidth, itemHeight)
+                              ? loading
+                                  ? displayEmpty(6, itemWidth, itemHeight)
+                                  : displayBrand(
+                                      distributor, itemWidth, itemHeight)
                               : Padding(
                                   padding: const EdgeInsets.all(20.0),
                                   child: Text(

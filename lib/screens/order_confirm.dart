@@ -143,8 +143,8 @@ class OrderConfirm extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   onPressed: () {
-                    Navigator.pop(context);
-                    Navigator.pop(context);
+                    Navigator.pop(context, "refresh");
+                    // Navigator.pop(context);
                   },
                 ),
               ),

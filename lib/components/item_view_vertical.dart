@@ -27,6 +27,7 @@ class _ItemViewVerticalState extends State<ItemViewVertical> {
 
   FToast fToast;
   int quantity = 0;
+  int cartQuantity = 0;
 
   _showToast(String msg) {
     Widget toast = Container(
@@ -48,12 +49,42 @@ class _ItemViewVerticalState extends State<ItemViewVertical> {
     );
   }
 
+  void checkQuantityInDb() async {
+    cartQuantity =
+        await SQLiteDbProvider.db.checkQuantity(productModel.productId);
+  }
+
   @override
   void initState() {
+    checkQuantityInDb();
+    quantity = productModel.minQty.round();
     fToast = FToast();
     fToast.init(context);
-    if (productModel != null) quantity = productModel.minQty.round();
+
+    refresh();
     super.initState();
+  }
+
+  void refresh() async {
+    setState(() {
+      if (cartQuantity > quantity) quantity = cartQuantity;
+    });
+    await Future.delayed(new Duration(seconds: 1), () {
+      setState(() {
+        if (cartQuantity > quantity) quantity = cartQuantity;
+      });
+    });
+    await Future.delayed(new Duration(seconds: 2), () {
+      setState(() {
+        if (cartQuantity > quantity) quantity = cartQuantity;
+      });
+    });
+    // Future.delayed(new Duration(seconds: 3), () {
+    //   setState(() {});
+    // });
+    // Future.delayed(new Duration(seconds: 5), () {
+    //   setState(() {});
+    // });
   }
 
   @override
@@ -62,6 +93,7 @@ class _ItemViewVerticalState extends State<ItemViewVertical> {
       padding: const EdgeInsets.all(2.0),
       child: GestureDetector(
         onTap: () {
+          productModel.quantity = quantity;
           Navigator.push(
               context,
               MaterialPageRoute(
@@ -136,7 +168,8 @@ class _ItemViewVerticalState extends State<ItemViewVertical> {
                         child: Text(
                           productModel.name,
                           style: TextStyle(
-                              fontSize: 14, fontWeight: FontWeight.bold),
+                              fontSize: productModel.name.length > 20 ? 15 : 16,
+                              fontWeight: FontWeight.bold),
                           overflow: TextOverflow.ellipsis,
                           maxLines: 2,
                         ),

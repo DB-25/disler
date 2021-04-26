@@ -27,7 +27,7 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
   void initState() {
     fToast = FToast();
     fToast.init(context);
-    quantity = productModel.minQty.round();
+    quantity = productModel.quantity.round();
     super.initState();
   }
 
